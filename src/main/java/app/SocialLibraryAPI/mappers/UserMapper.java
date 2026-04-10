@@ -1,0 +1,39 @@
+package app.SocialLibraryAPI.mappers;
+
+import app.SocialLibraryAPI.dto.request.User;
+import app.SocialLibraryAPI.dto.response.UserDTO;
+import app.SocialLibraryAPI.entity.UserEntity;
+
+public class UserMapper {
+    public static UserDTO toDTO(UserEntity user){
+
+        if(user == null){
+            return null;
+        }
+        return new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getAge(),
+                user.getEmail(),
+                user.getBio(),
+                user.getProfilePicUrl()
+        );
+    }
+
+    public static UserEntity toUserEntity(User user){
+        if(user == null){
+            return null;
+        }
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(user.username());
+        userEntity.setAge(user.age());
+        userEntity.setEmail(user.email());
+        userEntity.setPassword(user.password());
+        userEntity.setBio(user.bio());
+        userEntity.setProfilePicUrl(user.profilePicUrl());
+
+        return userEntity;
+    }
+
+}

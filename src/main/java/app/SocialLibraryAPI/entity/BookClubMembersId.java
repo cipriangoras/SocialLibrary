@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 
 import jakarta.persistence.*;
@@ -50,7 +50,7 @@ public class Book {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "book")
-    private Set<UserBookLibrary> userBookLibraries;
+    private Set<UserBookLibraryEntity> userBookLibraries;
 
     @OneToMany(mappedBy = "book")
     private Set<BookClub> bookClubs;

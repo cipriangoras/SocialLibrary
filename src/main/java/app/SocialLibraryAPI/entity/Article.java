@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +21,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    private UserEntity author;
 
     @Column(nullable = false)
     private String title;

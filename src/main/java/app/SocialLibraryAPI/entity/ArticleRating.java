@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +23,7 @@ public class ArticleRating {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
 
     @Column(nullable = false)
     private Integer score;

@@ -1,26 +1,25 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "users")
 @Entity
-public class User {
+public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String username;
@@ -42,7 +41,7 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user")
-    private Set<UserBookLibrary> userBookLibraries;
+    private Set<UserBookLibraryEntity> userBookLibraries;
 
     @OneToMany(mappedBy = "user")
     private Set<Book_Club_Members> bookClubMemberships;
@@ -55,5 +54,19 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<ArticleRating> articleRatings = new HashSet<>();
+
+    public UserEntity() {
+    }
+
+    public UserEntity(Long id, String username, int age, String email, String profilePicUrl, String password, String bio, Role role) {
+        this.id = id;
+        this.username = username;
+        this.age = age;
+        this.email = email;
+        this.profilePicUrl = profilePicUrl;
+        this.password = password;
+        this.bio = bio;
+        this.role = role;
+    }
 
 }

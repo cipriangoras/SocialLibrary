@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 public enum Status {
     WANT_TO_READ,

@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 
 import jakarta.persistence.*;
@@ -7,22 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "reviews")
-public class Review {
+public class UserBookLibraryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String content;
-    private int rating;
-    private LocalDateTime createdAt;
 
+    private Status status;
+    private boolean isFavorite;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
@@ -30,6 +26,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
+
 
 }

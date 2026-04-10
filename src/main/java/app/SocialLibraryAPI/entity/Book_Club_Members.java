@@ -1,4 +1,4 @@
-package app.bookAPI.entity;
+package app.SocialLibraryAPI.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class Book_Club_Members {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     private LocalDateTime joinedAt;
 }
