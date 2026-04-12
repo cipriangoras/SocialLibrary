@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,7 +45,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(exception = {
             MethodArgumentNotValidException.class,
-            IllegalStateException.class
+            IllegalStateException.class,
+            IllegalArgumentException.class
     })
     public ResponseEntity<ErrorResponseDTO> handleBadRequest(Exception e){
         logger.error("Handle Bad Request", e);
@@ -70,4 +72,18 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(409).body(errorDto);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentialsException(BadCredentialsException e) {
+        logger.error("Handle BadCredentialsException", e);
+
+        var errorDto = new ErrorResponseDTO(
+                "Bad credentials: pass or email",
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(409).body(errorDto);
+    }
+
 }

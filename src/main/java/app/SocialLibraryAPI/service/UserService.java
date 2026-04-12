@@ -7,6 +7,7 @@ import app.SocialLibraryAPI.entity.UserEntity;
 import app.SocialLibraryAPI.mappers.UserMapper;
 import app.SocialLibraryAPI.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +16,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private UserService(UserRepository userRepository){
+    private UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -25,8 +28,7 @@ public class UserService {
         var userEntity = UserMapper.toUserEntity(userToCreate);
 
         userEntity.setRole(Role.USER);
-
-        //userEntity.setPassword(ENCRYPTED pass);
+        userEntity.setPassword(passwordEncoder.encode(userToCreate.password()));
         if(userRepository.existsByEmail(userEntity.getEmail())){
             throw new IllegalStateException("Email already in use: " + userEntity.getEmail());
         }
@@ -58,9 +60,9 @@ public class UserService {
         UserEntity existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Nu a fost gasit user-ul cu id-ul: " + id));
 
-        existingUser.setUsername(updatedUser.username());
+        existingUser.setFullName(updatedUser.fullName());
         existingUser.setAge(updatedUser.age());
-        //existingUser.setPassword(ENCRYPTED pass);
+        existingUser.setPassword(passwordEncoder.encode(updatedUser.password()));
         existingUser.setEmail(updatedUser.email());
         existingUser.setBio(updatedUser.bio());
         existingUser.setProfilePicUrl(updatedUser.profilePicUrl());

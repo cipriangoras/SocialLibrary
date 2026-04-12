@@ -2,27 +2,31 @@ package app.SocialLibraryAPI.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @Entity
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
-    private String username;
+    private String fullName;
 
     @Column(nullable = false)
     private int age;
@@ -35,6 +39,9 @@ public class UserEntity {
 
     private String bio;
     private String profilePicUrl;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user")
@@ -55,18 +62,39 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private Set<ArticleRating> articleRatings = new HashSet<>();
 
-    public UserEntity() {
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
-    public UserEntity(Long id, String username, int age, String email, String profilePicUrl, String password, String bio, Role role) {
-        this.id = id;
-        this.username = username;
-        this.age = age;
-        this.email = email;
-        this.profilePicUrl = profilePicUrl;
-        this.password = password;
-        this.bio = bio;
-        this.role = role;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
+
+    @Override
+    public String getPassword(){
+        return password;
+    }
 }
