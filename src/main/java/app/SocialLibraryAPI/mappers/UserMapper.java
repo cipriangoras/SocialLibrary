@@ -12,7 +12,7 @@ public class UserMapper {
         }
         return new UserDTO(
                 user.getId(),
-                user.getUsername(),
+                user.getFullName(),
                 user.getAge(),
                 user.getEmail(),
                 user.getBio(),
@@ -26,7 +26,7 @@ public class UserMapper {
         }
 
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(user.username());
+        userEntity.setFullName(user.fullName());
         userEntity.setAge(user.age());
         userEntity.setEmail(user.email());
         userEntity.setPassword(user.password());

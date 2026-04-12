@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("api/management/users")
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -24,32 +25,32 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/users")
+    @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody @Valid User userToCreate){
         log.info("Method createUses was called");
         return ResponseEntity.status(201).body(userService.createUser(userToCreate));
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         log.info("Method getAllUsers was called");
         return ResponseEntity.status(200).body(userService.getAllUsers());
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id){
         log.info("Method getUserById was called");
         return ResponseEntity.status(200).body(userService.findUserById(id));
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") Long id){
         log.info("Method deleteUserById was called");
         userService.deleteUserById(id);
         return ResponseEntity.status(200).build();
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUserById(@PathVariable("id") Long id, @RequestBody @Valid User updatedUser){
         log.info("Method updateUserById was called");
         return ResponseEntity.status(201).body(userService.updateUserById(id, updatedUser));

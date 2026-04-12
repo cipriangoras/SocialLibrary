@@ -7,7 +7,7 @@ public record User (
 
     @NotBlank @Size(min=3, max=30)
     //@Patern ...
-    String username,
+    String fullName,
 
     @Min(0) @Max(120)
     int age,
