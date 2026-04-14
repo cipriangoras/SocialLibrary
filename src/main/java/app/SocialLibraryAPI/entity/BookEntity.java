@@ -1,17 +1,15 @@
 package app.SocialLibraryAPI.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 
 @Getter
 @Setter
@@ -19,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
-public class Book {
+public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -35,19 +33,22 @@ public class Book {
 
     private String description;
 
-    private LocalDateTime publicationYear;
+    private LocalDate publicationYear;
 
     private String coverImageUrl;
 
     private float rating;
 
-
-    @ManyToMany(mappedBy = "books")
-    private Set<Genre> genres;
-
+    @ManyToMany
+    @JoinTable(
+            name = "book_genres",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<GenreEntity> genres = new HashSet<>();
 
     @OneToMany(mappedBy = "book")
-    private List<Review> reviews;
+    private List<ReviewEntity> reviews;
 
     @OneToMany(mappedBy = "book")
     private Set<UserBookLibraryEntity> userBookLibraries;
@@ -58,4 +59,13 @@ public class Book {
     @OneToMany(mappedBy = "relatedBook")
     private Set<Article> articles = new HashSet<>();
 
+    public void addGenre(GenreEntity genre) {
+        this.genres.add(genre);
+        genre.getBooks().add(this);
+    }
+
+    public void removeGenre(GenreEntity genre) {
+        this.genres.remove(genre);
+        genre.getBooks().remove(this);
+    }
 }

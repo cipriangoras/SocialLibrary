@@ -45,7 +45,7 @@ public class UserEntity implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
+    private List<ReviewEntity> reviews;
 
     @OneToMany(mappedBy = "user")
     private Set<UserBookLibraryEntity> userBookLibraries;
@@ -61,6 +61,31 @@ public class UserEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private Set<ArticleRating> articleRatings = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_followers",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<UserEntity> following = new HashSet<>();
+
+    @ManyToMany(mappedBy = "following")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<UserEntity> followers = new HashSet<>();
+
+    public void follow(UserEntity userToFollow) {
+        this.following.add(userToFollow);
+        userToFollow.getFollowers().add(this);
+    }
+
+    public void unfollow(UserEntity userToUnfollow) {
+        this.following.remove(userToUnfollow);
+        userToUnfollow.getFollowers().remove(this);
+    }
 
 
     @Override
@@ -97,4 +122,7 @@ public class UserEntity implements UserDetails {
     public String getPassword(){
         return password;
     }
+
+
+
 }

@@ -28,7 +28,7 @@ public class BookClub {
 
     @ManyToOne
     @JoinColumn(name = "book_id")
-    private Book book;
+    private BookEntity book;
 
     @OneToMany(mappedBy = "bookClub")
     private Set<Book_Club_Members> members;

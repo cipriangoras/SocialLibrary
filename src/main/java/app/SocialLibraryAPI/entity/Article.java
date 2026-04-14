@@ -31,7 +31,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "related_book_id")
-    private Book relatedBook;
+    private BookEntity relatedBook;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

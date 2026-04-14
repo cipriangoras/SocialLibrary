@@ -6,6 +6,7 @@ import app.SocialLibraryAPI.dto.request.RegisterRequest;
 import app.SocialLibraryAPI.dto.response.AuthResponse;
 import app.SocialLibraryAPI.dto.response.UserDTO;
 import app.SocialLibraryAPI.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,12 +26,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest registerRequest){
         return ResponseEntity.status(201).body(authService.register(registerRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest loginRequest){
         return ResponseEntity.status(200).body(authService.login(loginRequest));
 
     }

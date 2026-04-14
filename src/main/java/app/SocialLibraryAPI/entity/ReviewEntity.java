@@ -7,18 +7,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class UserBookLibraryEntity {
+@Table(name = "reviews")
+public class ReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String content;
+    private int rating;
+    private LocalDateTime createdAt;
 
-    private Status status;
-    private boolean isFavorite;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
@@ -27,6 +31,5 @@ public class UserBookLibraryEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
 
 }
