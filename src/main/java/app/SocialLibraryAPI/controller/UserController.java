@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -53,6 +54,12 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUserById(@PathVariable("id") Long id, @RequestBody @Valid User updatedUser){
         log.info("REST request to update user with id: {}", id);
         return ResponseEntity.status(200).body(userService.updateUserById(id, updatedUser));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
+        UserDTO user = userService.findUserByEmail(principal.getName());
+        return ResponseEntity.ok(user);
     }
 
 }

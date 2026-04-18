@@ -20,7 +20,6 @@ public class FollowController {
         this.followService = followService;
     }
 
-    // 1. Dă follow unui utilizator
     @PostMapping("/{id}/follow")
     public ResponseEntity<Void> followUser(@PathVariable Long id, Principal principal) {
         log.info("REST request to follow user id: {} by user: {}", id, principal.getName());
@@ -28,7 +27,6 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
-    // 2. Scoate de la follow un utilizator
     @DeleteMapping("/{id}/unfollow")
     public ResponseEntity<Void> unfollowUser(@PathVariable Long id, Principal principal) {
         log.info("REST request to unfollow user id: {} by user: {}", id, principal.getName());
@@ -36,14 +34,12 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
-    // 3. Vezi lista de followers a unui utilizator
     @GetMapping("/{id}/followers")
     public ResponseEntity<List<UserDTO>> getFollowers(@PathVariable Long id) {
         log.info("REST request to fetch followers for user id: {}", id);
         return ResponseEntity.ok(followService.getFollowers(id));
     }
 
-    // 4. Vezi pe cine urmărește un utilizator (following)
     @GetMapping("/{id}/following")
     public ResponseEntity<List<UserDTO>> getFollowing(@PathVariable Long id) {
         log.info("REST request to fetch following list for user id: {}", id);

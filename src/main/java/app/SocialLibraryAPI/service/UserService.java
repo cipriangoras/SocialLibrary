@@ -94,5 +94,13 @@ public class UserService {
     }
 
 
-
+    public UserDTO findUserByEmail(String email) {
+        log.info("Fetching user with email: {}", email);
+        return userRepository.findByEmail(email)
+                .map(UserMapper::toDTO)
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new EntityNotFoundException("User not found with email: " + email);
+                });
+    }
 }

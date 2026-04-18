@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/test/management/books")
+@RequestMapping("/api/management/books")
 public class BookController {
 
     private final BookService bookService;
@@ -31,7 +31,7 @@ public class BookController {
         return ResponseEntity.status(201).body(createdBook);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Page<BookDTO>> getAllBooks(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Integer genreId,
