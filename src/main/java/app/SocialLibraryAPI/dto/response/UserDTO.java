@@ -6,6 +6,6 @@ public record UserDTO(
         int age,
         String email,
         String bio,
-        String profilePicUrl
+        String profilePicUrl,
+        String role 
 ) {}
-

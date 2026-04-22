@@ -58,8 +58,6 @@ public class BookService {
             book.setGenres(new HashSet<>());
         }
 
-        // Datorită adnotării @JoinTable din clasa Book, Hibernate va insera
-        // AUTOMAT și rândurile necesare în tabelul intermediar 'book_genres'!
         BookEntity savedBook = bookRepository.save(book);
 
         log.info("Successfully created book '{}' with ID: {}", savedBook.getTitle(), savedBook.getId());
@@ -69,9 +67,11 @@ public class BookService {
     public Page<BookDTO> getAllBooks(String search, Integer genreId, Pageable pageable) {
         log.debug("Fetching books with search='{}', genreId={}, pageable={}", search, genreId, pageable);
 
+
         String searchParam = (search == null || search.trim().isEmpty())
                 ? "%"
                 : "%" + search.trim() + "%";
+
         var bookPage = bookRepository.findWithFilters(searchParam, genreId, pageable);
 
         log.info("Found {} books matching the filters", bookPage.getTotalElements());

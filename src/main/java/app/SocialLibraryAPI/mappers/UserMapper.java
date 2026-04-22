@@ -6,17 +6,15 @@ import app.SocialLibraryAPI.entity.UserEntity;
 
 public class UserMapper {
     public static UserDTO toDTO(UserEntity user){
-
-        if(user == null){
-            return null;
-        }
+        if(user == null) return null;
         return new UserDTO(
                 user.getId(),
                 user.getFullName(),
                 user.getAge(),
                 user.getEmail(),
                 user.getBio(),
-                user.getProfilePicUrl()
+                user.getProfilePicUrl(),
+                user.getRole().name()
         );
     }
 
