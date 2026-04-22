@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Article {
+public class ArticleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
