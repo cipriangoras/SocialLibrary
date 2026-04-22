@@ -69,13 +69,9 @@ public class BookService {
     public Page<BookDTO> getAllBooks(String search, Integer genreId, Pageable pageable) {
         log.debug("Fetching books with search='{}', genreId={}, pageable={}", search, genreId, pageable);
 
-        // Dacă search e gol sau null, punem "%" (arată tot).
-        // Dacă are text (ex: "harry"), punem "%harry%"
         String searchParam = (search == null || search.trim().isEmpty())
                 ? "%"
                 : "%" + search.trim() + "%";
-
-        // Apelăm repository-ul cu noul searchParam
         var bookPage = bookRepository.findWithFilters(searchParam, genreId, pageable);
 
         log.info("Found {} books matching the filters", bookPage.getTotalElements());

@@ -19,7 +19,7 @@ public class ArticleRating {
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
-    private Article article;
+    private ArticleEntity article;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

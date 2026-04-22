@@ -44,7 +44,7 @@ public class FollowService {
         }
 
         currentUser.follow(targetUser);
-        userRepository.save(currentUser); // Hibernate va actualiza tabelul de legătură
+        userRepository.save(currentUser);
         log.info("Successfully updated follow. User {} is now following User {}", currentUser.getId(), targetUser.getId());
     }
 
