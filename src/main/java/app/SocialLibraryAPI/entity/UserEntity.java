@@ -57,7 +57,7 @@ public class UserEntity implements UserDetails {
     private Set<ChatMessage> chatMessages = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
-    private Set<Article> articles = new HashSet<>();
+    private Set<ArticleEntity> articles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<ArticleRating> articleRatings = new HashSet<>();

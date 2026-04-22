@@ -57,7 +57,7 @@ public class BookEntity {
     private Set<BookClub> bookClubs;
 
     @OneToMany(mappedBy = "relatedBook")
-    private Set<Article> articles = new HashSet<>();
+    private Set<ArticleEntity> articles = new HashSet<>();
 
     public void addGenre(GenreEntity genre) {
         this.genres.add(genre);
