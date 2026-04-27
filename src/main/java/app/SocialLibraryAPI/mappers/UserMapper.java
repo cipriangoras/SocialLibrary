@@ -18,7 +18,7 @@ public class UserMapper {
         );
     }
 
-    public static UserEntity toUserEntity(User user){
+    public static UserEntity toEntity(User user){
         if(user == null){
             return null;
         }

@@ -5,6 +5,7 @@ import app.SocialLibraryAPI.dto.response.ReviewDTO;
 import app.SocialLibraryAPI.entity.BookEntity;
 import app.SocialLibraryAPI.entity.ReviewEntity;
 import app.SocialLibraryAPI.entity.UserEntity;
+import app.SocialLibraryAPI.mappers.ReviewMapper;
 import app.SocialLibraryAPI.repository.BookRepository;
 import app.SocialLibraryAPI.repository.ReviewRepository;
 import app.SocialLibraryAPI.repository.UserRepository;
@@ -116,13 +117,7 @@ public class ReviewService {
         }
 
         return reviewRepository.findByBook_Id(bookId, pageable)
-                .map(review -> new ReviewDTO(
-                        review.getId(),
-                        review.getContent(),
-                        review.getRating(),
-                        review.getCreatedAt(),
-                        review.getUser().getFullName()
-                ));
+                .map(ReviewMapper::toDTO);
     }
 
     @Transactional
@@ -140,12 +135,6 @@ public class ReviewService {
         updateBookAverageRating(updatedReview.getBook());
 
         log.info("Successfully updated review id: {}", reviewId);
-        return new ReviewDTO(
-                updatedReview.getId(),
-                updatedReview.getContent(),
-                updatedReview.getRating(),
-                updatedReview.getCreatedAt(),
-                updatedReview.getUser().getFullName()
-        );
+        return ReviewMapper.toDTO(updatedReview);
     }
 }

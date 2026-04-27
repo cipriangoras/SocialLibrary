@@ -6,6 +6,7 @@ import app.SocialLibraryAPI.entity.BookEntity;
 import app.SocialLibraryAPI.entity.Status;
 import app.SocialLibraryAPI.entity.UserBookLibraryEntity;
 import app.SocialLibraryAPI.entity.UserEntity;
+import app.SocialLibraryAPI.mappers.LibraryMapper;
 import app.SocialLibraryAPI.repository.BookRepository;
 import app.SocialLibraryAPI.repository.UserBookLibraryRepository;
 import app.SocialLibraryAPI.repository.UserRepository;
@@ -59,7 +60,7 @@ public class LibraryService {
         UserBookLibraryEntity saved = libraryRepository.save(entry);
         log.info("Successfully updated library entry id: {} for book id: {}", saved.getId(), bookId);
 
-        return mapToDTO(saved);
+        return LibraryMapper.toDTO(saved);
     }
 
     @Transactional(readOnly = true)
@@ -73,7 +74,7 @@ public class LibraryService {
             entries = libraryRepository.findByUser_Email(userEmail, pageable);
         }
 
-        return entries.map(this::mapToDTO);
+        return entries.map(LibraryMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
@@ -86,7 +87,7 @@ public class LibraryService {
                     return new EntityNotFoundException("The book is not in your library");
                 });
 
-        return mapToDTO(entry);
+        return LibraryMapper.toDTO(entry);
     }
 
     @Transactional
@@ -103,13 +104,5 @@ public class LibraryService {
         log.info("Successfully removed book id: {} from user library", bookId);
     }
 
-    private LibraryEntryDTO mapToDTO(UserBookLibraryEntity entity) {
-        return new LibraryEntryDTO(
-                entity.getId(),
-                entity.getBook().getId(),
-                entity.getBook().getTitle(),
-                entity.getStatus(),
-                entity.isFavorite()
-        );
-    }
+
 }
