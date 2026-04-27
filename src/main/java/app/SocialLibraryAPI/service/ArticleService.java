@@ -108,11 +108,11 @@ public class ArticleService {
         log.info("Attempting to delete article id: {} by user: {}", id, userEmail);
 
         ArticleEntity article = articleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Articolul nu a fost găsit."));
+                .orElseThrow(() -> new EntityNotFoundException("Article not found."));
 
         if (!article.getAuthor().getEmail().equals(userEmail)) {
             log.error("User {} attempted to delete article {} owned by {}", userEmail, id, article.getAuthor().getEmail());
-            throw new IllegalStateException("Nu poți șterge decât propriile articole!");
+            throw new IllegalStateException("You can only delete your own articles!");
         }
 
         articleRepository.delete(article);

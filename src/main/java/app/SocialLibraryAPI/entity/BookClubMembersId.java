@@ -21,7 +21,7 @@ public class BookClubMembersId implements Serializable {
     private Integer clubId;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Override
     public boolean equals(Object o) {
