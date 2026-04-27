@@ -3,6 +3,7 @@ package app.SocialLibraryAPI.service;
 import app.SocialLibraryAPI.dto.request.CreateGenreRequest;
 import app.SocialLibraryAPI.dto.response.GenreDTO;
 import app.SocialLibraryAPI.entity.GenreEntity;
+import app.SocialLibraryAPI.mappers.GenreMapper;
 import app.SocialLibraryAPI.repository.GenreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,28 +35,25 @@ public class GenreService {
 
         GenreEntity saved = genreRepository.save(genre);
         log.info("Successfully created genre '{}' with ID: {}", saved.getName(), saved.getId());
-        return toDto(saved);
+        return GenreMapper.toDTO(saved);
     }
 
     public List<GenreDTO> getAllGenres() {
         log.info("Fetching all genres");
-        List<GenreDTO> genres = genreRepository.findAll().stream().map(this::toDto).toList();
+        List<GenreDTO> genres = genreRepository.findAll().stream().map(GenreMapper::toDTO).toList();
         log.info("Found {} genres", genres.size());
         return genres;
     }
 
     public GenreDTO getGenreById(Integer id) {
         log.info("Fetching genre with id: {}", id);
-        return genreRepository.findById(id).map(this::toDto)
+        return genreRepository.findById(id).map(GenreMapper::toDTO)
                 .orElseThrow(() -> {
                     log.error("Genre not found with id: {}", id);
                     return new EntityNotFoundException("Genre not found. Id: " + id);
                 });
     }
 
-    private GenreDTO toDto(GenreEntity genre) {
-        return new GenreDTO(genre.getId(), genre.getName());
-    }
 
     public void deleteGenreById(Integer id) {
         log.info("Attempting to delete genre with id: {}", id);

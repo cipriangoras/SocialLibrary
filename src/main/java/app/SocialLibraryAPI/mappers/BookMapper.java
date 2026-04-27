@@ -3,8 +3,10 @@ package app.SocialLibraryAPI.mappers;
 import app.SocialLibraryAPI.dto.response.BookDTO;
 import app.SocialLibraryAPI.dto.response.GenreDTO;
 import app.SocialLibraryAPI.entity.BookEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
+
 
 public class BookMapper {
     public static BookDTO toDTO(BookEntity book) {

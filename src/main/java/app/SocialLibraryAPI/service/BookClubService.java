@@ -5,6 +5,7 @@ import app.SocialLibraryAPI.dto.request.CreateClubSessionRequest;
 import app.SocialLibraryAPI.dto.response.BookClubDTO;
 import app.SocialLibraryAPI.dto.response.ClubSessionDTO;
 import app.SocialLibraryAPI.entity.*;
+import app.SocialLibraryAPI.mappers.BookClubMapper;
 import app.SocialLibraryAPI.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class BookClubService {
         joinClub(userEmail, savedClub.getId());
 
         log.info("Successfully created book club id: {}", savedClub.getId());
-        return mapToClubDTO(savedClub);
+        return BookClubMapper.toClubDTO(savedClub);
     }
 
     @Transactional
@@ -122,7 +123,7 @@ public class BookClubService {
         ClubSession savedSession = sessionRepository.save(session);
         log.info("Successfully added session id: {}", savedSession.getId());
 
-        return mapToSessionDTO(savedSession);
+        return BookClubMapper.toSessionDTO(savedSession);
     }
 
     @Transactional(readOnly = true)
@@ -130,7 +131,7 @@ public class BookClubService {
         log.info("Fetching all book clubs with bookTitle filter: {}", bookTitle);
 
         return bookClubRepository.findWithFilters(bookTitle, pageable)
-                .map(this::mapToClubDTO);
+                .map(BookClubMapper::toClubDTO);
     }
 
     @Transactional
@@ -155,24 +156,5 @@ public class BookClubService {
         log.info("Successfully deleted book club id: {}", clubId);
     }
 
-    private BookClubDTO mapToClubDTO(BookClubEntity club) {
-        return new BookClubDTO(
-                club.getId(),
-                club.getName(),
-                club.getDescription(),
-                club.getUser().getId(),
-                club.getUser().getFullName(),
-                club.getBook().getId(),
-                club.getBook().getTitle()
-        );
-    }
 
-    private ClubSessionDTO mapToSessionDTO(ClubSession session) {
-        return new ClubSessionDTO(
-                session.getId(),
-                session.getTitle(),
-                session.getStartTime(),
-                session.getBookClub().getId()
-        );
-    }
 }

@@ -3,9 +3,9 @@ package app.SocialLibraryAPI.service;
 import app.SocialLibraryAPI.dto.request.CreateArticleRequest;
 import app.SocialLibraryAPI.dto.response.ArticleDTO;
 import app.SocialLibraryAPI.entity.ArticleEntity;
-import app.SocialLibraryAPI.entity.ArticleRating;
 import app.SocialLibraryAPI.entity.BookEntity;
 import app.SocialLibraryAPI.entity.UserEntity;
+import app.SocialLibraryAPI.mappers.ArticleMapper;
 import app.SocialLibraryAPI.repository.ArticleRepository;
 import app.SocialLibraryAPI.repository.BookRepository;
 import app.SocialLibraryAPI.repository.UserRepository;
@@ -55,13 +55,13 @@ public class ArticleService {
         ArticleEntity savedArticle = articleRepository.save(article);
         log.info("Successfully created article id: {}", savedArticle.getId());
 
-        return mapToDTO(savedArticle);
+        return ArticleMapper.toDTO(savedArticle);
     }
 
     @Transactional(readOnly = true)
     public Page<ArticleDTO> getArticlesFeed(Pageable pageable) {
         log.info("Fetching article feed");
-        return articleRepository.findAllByOrderByCreatedAtDesc(pageable).map(this::mapToDTO);
+        return articleRepository.findAllByOrderByCreatedAtDesc(pageable).map(ArticleMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
@@ -72,7 +72,7 @@ public class ArticleService {
                     log.error("Article not found with id: {}", id);
                     return new EntityNotFoundException("Article not found.");
                 });
-        return mapToDTO(article);
+        return ArticleMapper.toDTO(article);
     }
 
     @Transactional
@@ -100,7 +100,7 @@ public class ArticleService {
 
         ArticleEntity updated = articleRepository.save(article);
         log.info("Successfully updated article id: {}", id);
-        return mapToDTO(updated);
+        return ArticleMapper.toDTO(updated);
     }
 
     @Transactional
@@ -119,23 +119,5 @@ public class ArticleService {
         log.info("Successfully deleted article id: {}", id);
     }
 
-    private ArticleDTO mapToDTO(ArticleEntity entity) {
-        float averageRating = 0.0f;
-        if (entity.getRatings() != null && !entity.getRatings().isEmpty()) {
-            double sum = entity.getRatings().stream().mapToDouble(ArticleRating::getScore).sum();
-            averageRating = (float) (sum / entity.getRatings().size());
-            averageRating = Math.round(averageRating * 10.0f) / 10.0f;
-        }
 
-        return new ArticleDTO(
-                entity.getId(),
-                entity.getTitle(),
-                entity.getContent(),
-                entity.getAuthor().getFullName(),
-                entity.getRelatedBook() != null ? entity.getRelatedBook().getId() : null,
-                entity.getRelatedBook() != null ? entity.getRelatedBook().getTitle() : null,
-                entity.getCreatedAt(),
-                averageRating
-        );
-    }
 }

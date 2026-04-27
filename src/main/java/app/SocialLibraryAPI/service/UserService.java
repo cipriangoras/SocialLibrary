@@ -28,7 +28,7 @@ public class UserService {
     public UserDTO createUser(User userToCreate){
         log.info("Attempting to create user with email: {}", userToCreate.email());
 
-        var userEntity = UserMapper.toUserEntity(userToCreate);
+        var userEntity = UserMapper.toEntity(userToCreate);
 
         userEntity.setRole(Role.USER);
         userEntity.setPassword(passwordEncoder.encode(userToCreate.password()));
