@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,22 @@ public class BookClubEntity {
 
     private String name;
     private String description;
+
+    @Column(columnDefinition = "TEXT")
+    private String clubGuidelines;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    private float avgAttendance = 0.0f;
+
+    @ManyToMany
+    @JoinTable(
+            name = "book_club_past_books",
+            joinColumns = @JoinColumn(name = "club_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private Set<BookEntity> pastBooks = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "creator_id")

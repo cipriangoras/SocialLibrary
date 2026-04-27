@@ -4,6 +4,8 @@ import app.SocialLibraryAPI.entity.ReviewEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +20,10 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     Page<ReviewEntity> findByBook_Id(Integer bookId, Pageable pageable);
 
     List<ReviewEntity> findByUser_IdInOrderByCreatedAtDesc(List<Long> userIds);
+
+    List<ReviewEntity> findByUser_IdInAndCreatedAtLessThanOrderByCreatedAtDesc(
+            List<Long> userIds,
+            LocalDateTime cursor,
+            Pageable pageable
+    );
 }
