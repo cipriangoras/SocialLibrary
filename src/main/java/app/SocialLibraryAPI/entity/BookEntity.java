@@ -54,7 +54,7 @@ public class BookEntity {
     private Set<UserBookLibraryEntity> userBookLibraries;
 
     @OneToMany(mappedBy = "book")
-    private Set<BookClub> bookClubs;
+    private Set<BookClubEntity> bookClubs;
 
     @OneToMany(mappedBy = "relatedBook")
     private Set<ArticleEntity> articles = new HashSet<>();

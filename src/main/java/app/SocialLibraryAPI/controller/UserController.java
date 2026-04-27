@@ -59,7 +59,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
         UserDTO user = userService.findUserByEmail(principal.getName());
-        return ResponseEntity.ok(user);
+        return ResponseEntity.status(200).body(user);
     }
 
 }

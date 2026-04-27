@@ -51,13 +51,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Permitem frontend-ului de pe portul 5173 să comunice cu backend-ul
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
 
-        // Permitem toate metodele HTTP necesare
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // Permitem header-ele (foarte important pentru "Authorization" unde punem JWT-ul)
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 

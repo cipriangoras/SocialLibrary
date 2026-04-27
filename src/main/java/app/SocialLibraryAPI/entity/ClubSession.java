@@ -21,7 +21,7 @@ public class ClubSession {
 
     @ManyToOne
     @JoinColumn(name = "club_id", nullable = false)
-    private BookClub bookClub;
+    private BookClubEntity bookClub;
 
     @Column(nullable = false)
     private String title;
