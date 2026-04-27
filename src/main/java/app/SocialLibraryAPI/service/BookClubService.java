@@ -46,8 +46,11 @@ public class BookClubService {
         BookClubEntity club = new BookClubEntity();
         club.setName(request.name());
         club.setDescription(request.description());
+        club.setClubGuidelines(request.clubGuidelines());
+        club.setCreatedAt(LocalDateTime.now());
         club.setUser(creator);
         club.setBook(book);
+        club.setAvgAttendance(0.0f);
 
         BookClubEntity savedClub = bookClubRepository.save(club);
 
