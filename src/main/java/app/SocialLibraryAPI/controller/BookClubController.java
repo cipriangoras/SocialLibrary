@@ -38,14 +38,14 @@ public class BookClubController {
     public ResponseEntity<Void> joinClub(@PathVariable Integer clubId, Principal principal) {
         log.info("REST request to join club id: {} by user: {}", clubId, principal.getName());
         bookClubService.joinClub(principal.getName(), clubId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 
     @DeleteMapping("/{clubId}/leave")
     public ResponseEntity<Void> leaveClub(@PathVariable Integer clubId, Principal principal) {
         log.info("REST request to leave club id: {} by user: {}", clubId, principal.getName());
         bookClubService.leaveClub(principal.getName(), clubId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 
     @PostMapping("/{clubId}/sessions")
@@ -62,13 +62,13 @@ public class BookClubController {
             @RequestParam(required = false) String bookTitle,
             @ParameterObject Pageable pageable) {
         log.info("REST request to get all book clubs filtered by book title: {}", bookTitle);
-        return ResponseEntity.ok(bookClubService.getAllBookClubs(bookTitle, pageable));
+        return ResponseEntity.status(200).body(bookClubService.getAllBookClubs(bookTitle, pageable));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClub(@PathVariable Integer id, Principal principal) {
         log.info("REST request to delete book club id: {} by user: {}", id, principal.getName());
         bookClubService.deleteBookClub(principal.getName(), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 }

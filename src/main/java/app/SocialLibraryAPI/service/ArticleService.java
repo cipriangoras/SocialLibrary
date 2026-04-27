@@ -70,7 +70,7 @@ public class ArticleService {
         ArticleEntity article = articleRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Article not found with id: {}", id);
-                    return new EntityNotFoundException("Articolul nu a fost găsit.");
+                    return new EntityNotFoundException("Article not found.");
                 });
         return mapToDTO(article);
     }
@@ -80,11 +80,11 @@ public class ArticleService {
         log.info("Attempting to update article id: {} by user: {}", id, userEmail);
 
         ArticleEntity article = articleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Articolul nu a fost găsit."));
+                .orElseThrow(() -> new EntityNotFoundException("Article not found."));
 
         if (!article.getAuthor().getEmail().equals(userEmail)) {
             log.error("User {} attempted to update article {} owned by {}", userEmail, id, article.getAuthor().getEmail());
-            throw new IllegalStateException("Nu poți edita decât propriile articole!");
+            throw new IllegalStateException("You can only edit your own articles!");
         }
 
         article.setTitle(request.title());
@@ -92,7 +92,7 @@ public class ArticleService {
 
         if (request.relatedBookId() != null) {
             BookEntity relatedBook = bookRepository.findById(request.relatedBookId())
-                    .orElseThrow(() -> new EntityNotFoundException("Cartea nu a fost găsită."));
+                    .orElseThrow(() -> new EntityNotFoundException("Book not found."));
             article.setRelatedBook(relatedBook);
         } else {
             article.setRelatedBook(null);

@@ -36,14 +36,14 @@ public class ReviewController {
             @Valid @RequestBody CreateReviewRequest request,
             Principal principal) {
         log.info("REST request to update review id: {} by user: {}", id, principal.getName());
-        return ResponseEntity.ok(reviewService.updateReview(principal.getName(), id, request));
+        return ResponseEntity.status(200).body(reviewService.updateReview(principal.getName(), id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReview(@PathVariable Integer id, Principal principal) {
         log.info("REST request to delete review id: {} by user: {}", id, principal.getName());
         reviewService.deleteReview(principal.getName(), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 
     @GetMapping("/book/{bookId}")
@@ -51,6 +51,6 @@ public class ReviewController {
             @PathVariable Integer bookId,
             @ParameterObject Pageable pageable) {
         log.info("REST request to fetch reviews for book id: {} with pagination", bookId);
-        return ResponseEntity.ok(reviewService.getReviewsForBook(bookId, pageable));
+        return ResponseEntity.status(200).body(reviewService.getReviewsForBook(bookId, pageable));
     }
 }

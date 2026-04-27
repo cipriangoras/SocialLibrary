@@ -39,7 +39,7 @@ public class ArticleController {
     @GetMapping("/feed")
     public ResponseEntity<Page<ArticleDTO>> getArticleFeed(@ParameterObject Pageable pageable) {
         log.info("REST request to fetch article feed");
-        return ResponseEntity.ok(articleService.getArticlesFeed(pageable));
+        return ResponseEntity.status(200).body(articleService.getArticlesFeed(pageable));
     }
 
     @PutMapping("/{articleId}/rate")
@@ -49,13 +49,13 @@ public class ArticleController {
             Principal principal) {
         log.info("REST request to rate article id: {} by user: {}", articleId, principal.getName());
         ratingService.rateArticle(principal.getName(), articleId, request.score());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ArticleDTO> getArticleById(@PathVariable Integer id) {
         log.info("REST request to get article id: {}", id);
-        return ResponseEntity.ok(articleService.getArticleById(id));
+        return ResponseEntity.status(200).body(articleService.getArticleById(id));
     }
 
     @PutMapping("/{id}")
@@ -64,7 +64,7 @@ public class ArticleController {
             @Valid @RequestBody CreateArticleRequest request,
             Principal principal) {
         log.info("REST request to update article id: {} by user: {}", id, principal.getName());
-        return ResponseEntity.ok(articleService.updateArticle(principal.getName(), id, request));
+        return ResponseEntity.status(200).body(articleService.updateArticle(principal.getName(), id, request));
     }
 
     @DeleteMapping("/{id}")

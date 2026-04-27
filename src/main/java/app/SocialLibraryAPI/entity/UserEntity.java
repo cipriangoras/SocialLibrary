@@ -51,7 +51,7 @@ public class UserEntity implements UserDetails {
     private Set<UserBookLibraryEntity> userBookLibraries;
 
     @OneToMany(mappedBy = "user")
-    private Set<Book_Club_Members> bookClubMemberships;
+    private Set<BookClubMembersEntity> bookClubMemberships;
 
     @OneToMany(mappedBy = "user")
     private Set<ChatMessage> chatMessages = new HashSet<>();

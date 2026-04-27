@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "book_club_members")
-public class Book_Club_Members {
+public class BookClubMembersEntity {
 
     @EmbeddedId
     private BookClubMembersId id;
@@ -22,7 +22,7 @@ public class Book_Club_Members {
     @ManyToOne
     @MapsId("clubId")
     @JoinColumn(name = "club_id")
-    private BookClub bookClub;
+    private BookClubEntity bookClub;
 
     @ManyToOne
     @MapsId("userId")

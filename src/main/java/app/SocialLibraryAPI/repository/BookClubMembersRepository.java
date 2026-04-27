@@ -1,8 +1,12 @@
 package app.SocialLibraryAPI.repository;
 
 import app.SocialLibraryAPI.entity.BookClubMembersId;
-import app.SocialLibraryAPI.entity.Book_Club_Members;
+import app.SocialLibraryAPI.entity.BookClubMembersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BookClubMembersRepository extends JpaRepository<Book_Club_Members, BookClubMembersId> {
+import java.util.List;
+
+
+public interface BookClubMembersRepository extends JpaRepository<BookClubMembersEntity, BookClubMembersId> {
+    List<BookClubMembersEntity> findByBookClub_Id(Integer clubId);
 }

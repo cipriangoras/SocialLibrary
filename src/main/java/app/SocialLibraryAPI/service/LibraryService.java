@@ -83,7 +83,7 @@ public class LibraryService {
         UserBookLibraryEntity entry = libraryRepository.findByBook_IdAndUser_Email(bookId, userEmail)
                 .orElseThrow(() -> {
                     log.error("Library entry not found for book id: {} and user: {}", bookId, userEmail);
-                    return new EntityNotFoundException("Cartea nu se află în biblioteca ta.");
+                    return new EntityNotFoundException("The book is not in your library");
                 });
 
         return mapToDTO(entry);
@@ -96,7 +96,7 @@ public class LibraryService {
         UserBookLibraryEntity entry = libraryRepository.findByBook_IdAndUser_Email(bookId, userEmail)
                 .orElseThrow(() -> {
                     log.error("Failed to remove. Library entry not found for book id: {} and user: {}", bookId, userEmail);
-                    return new EntityNotFoundException("Cartea nu a fost găsită în bibliotecă.");
+                    return new EntityNotFoundException("The book was not found in the library.");
                 });
 
         libraryRepository.delete(entry);

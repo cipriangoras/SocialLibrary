@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class BookClub {
+public class BookClubEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -31,7 +31,7 @@ public class BookClub {
     private BookEntity book;
 
     @OneToMany(mappedBy = "bookClub")
-    private Set<Book_Club_Members> members;
+    private Set<BookClubMembersEntity> members;
 
     @OneToMany(mappedBy = "bookClub", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ClubSession> sessions = new HashSet<>();

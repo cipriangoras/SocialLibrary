@@ -24,25 +24,25 @@ public class FollowController {
     public ResponseEntity<Void> followUser(@PathVariable Long id, Principal principal) {
         log.info("REST request to follow user id: {} by user: {}", id, principal.getName());
         followService.followUser(principal.getName(), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 
     @DeleteMapping("/{id}/unfollow")
     public ResponseEntity<Void> unfollowUser(@PathVariable Long id, Principal principal) {
         log.info("REST request to unfollow user id: {} by user: {}", id, principal.getName());
         followService.unfollowUser(principal.getName(), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).build();
     }
 
     @GetMapping("/{id}/followers")
     public ResponseEntity<List<UserDTO>> getFollowers(@PathVariable Long id) {
         log.info("REST request to fetch followers for user id: {}", id);
-        return ResponseEntity.ok(followService.getFollowers(id));
+        return ResponseEntity.status(200).body(followService.getFollowers(id));
     }
 
     @GetMapping("/{id}/following")
     public ResponseEntity<List<UserDTO>> getFollowing(@PathVariable Long id) {
         log.info("REST request to fetch following list for user id: {}", id);
-        return ResponseEntity.ok(followService.getFollowing(id));
+        return ResponseEntity.status(200).body(followService.getFollowing(id));
     }
 }

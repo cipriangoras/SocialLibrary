@@ -42,13 +42,13 @@ public class BookClubService {
         BookEntity book = bookRepository.findById(request.bookId())
                 .orElseThrow(() -> new EntityNotFoundException("Book not found."));
 
-        BookClub club = new BookClub();
+        BookClubEntity club = new BookClubEntity();
         club.setName(request.name());
         club.setDescription(request.description());
         club.setUser(creator);
         club.setBook(book);
 
-        BookClub savedClub = bookClubRepository.save(club);
+        BookClubEntity savedClub = bookClubRepository.save(club);
 
         joinClub(userEmail, savedClub.getId());
 
@@ -62,16 +62,16 @@ public class BookClubService {
 
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
-        BookClub club = bookClubRepository.findById(clubId)
+        BookClubEntity club = bookClubRepository.findById(clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
 
         BookClubMembersId membersId = new BookClubMembersId(clubId, user.getId());
 
         if (membersRepository.existsById(membersId)) {
-            throw new IllegalStateException("Ești deja membru al acestui club!");
+            throw new IllegalStateException("You are already a member of this club!");
         }
 
-        Book_Club_Members membership = new Book_Club_Members();
+        BookClubMembersEntity membership = new BookClubMembersEntity();
         membership.setId(membersId);
         membership.setBookClub(club);
         membership.setUser(user);
@@ -90,8 +90,8 @@ public class BookClubService {
 
         BookClubMembersId membersId = new BookClubMembersId(clubId, user.getId());
 
-        Book_Club_Members membership = membersRepository.findById(membersId)
-                .orElseThrow(() -> new EntityNotFoundException("Nu ești membru al acestui club."));
+        BookClubMembersEntity membership = membersRepository.findById(membersId)
+                .orElseThrow(() -> new EntityNotFoundException("You are not a member of this club."));
 
         membersRepository.delete(membership);
         log.info("User {} successfully left club {}", userEmail, clubId);
@@ -103,7 +103,7 @@ public class BookClubService {
 
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
-        BookClub club = bookClubRepository.findById(clubId)
+        BookClubEntity club = bookClubRepository.findById(clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
 
         boolean isCreator = club.getUser().getId().equals(user.getId());
@@ -111,7 +111,7 @@ public class BookClubService {
 
         if (!isCreator && !isAdmin) {
             log.error("User {} is not authorized to add sessions to club {}", userEmail, clubId);
-            throw new IllegalStateException("Nu ai permisiunea de a crea sesiuni pentru acest club. Doar creatorul sau un Admin poate face asta.");
+            throw new IllegalStateException("You don't have permission to create sessions for this club. Only the creator or an Admin can do this.");
         }
 
         ClubSession session = new ClubSession();
@@ -137,7 +137,7 @@ public class BookClubService {
     public void deleteBookClub(String userEmail, Integer clubId) {
         log.info("Attempting to delete book club id: {} by user: {}", clubId, userEmail);
 
-        BookClub club = bookClubRepository.findById(clubId)
+        BookClubEntity club = bookClubRepository.findById(clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
 
         UserEntity user = userRepository.findByEmail(userEmail)
@@ -148,14 +148,14 @@ public class BookClubService {
 
         if (!isCreator && !isAdmin) {
             log.error("User {} is not authorized to delete club {}", userEmail, clubId);
-            throw new IllegalStateException("Nu ai permisiunea de a șterge acest club. Doar creatorul sau un Admin pot face asta.");
+            throw new IllegalStateException("You don't have permission to delete this club. Only the creator or an Admin can do this.");
         }
 
         bookClubRepository.delete(club);
         log.info("Successfully deleted book club id: {}", clubId);
     }
 
-    private BookClubDTO mapToClubDTO(BookClub club) {
+    private BookClubDTO mapToClubDTO(BookClubEntity club) {
         return new BookClubDTO(
                 club.getId(),
                 club.getName(),
