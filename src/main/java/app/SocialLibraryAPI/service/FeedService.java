@@ -66,6 +66,7 @@ public class FeedService {
                     r.getContent(),
                     r.getBook().getId(),
                     r.getBook().getTitle(),
+                    r.getBook().getCoverImageUrl(),
                     r.getCreatedAt()
             ));
         }
@@ -79,6 +80,7 @@ public class FeedService {
                     a.getTitle(),
                     a.getRelatedBook() != null ? a.getRelatedBook().getId() : null,
                     a.getRelatedBook() != null ? a.getRelatedBook().getTitle() : null,
+                    a.getRelatedBook() != null ? a.getRelatedBook().getCoverImageUrl() : null,
                     a.getCreatedAt()
             ));
         }

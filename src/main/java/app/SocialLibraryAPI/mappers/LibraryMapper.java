@@ -9,6 +9,7 @@ public class LibraryMapper {
                 entity.getId(),
                 entity.getBook().getId(),
                 entity.getBook().getTitle(),
+                entity.getBook().getCoverImageUrl(),
                 entity.getStatus(),
                 entity.isFavorite()
         );

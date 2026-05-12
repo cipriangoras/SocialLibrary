@@ -1,5 +1,6 @@
 package app.SocialLibraryAPI.service;
 
+import app.SocialLibraryAPI.dto.request.UpdateProfileRequest;
 import app.SocialLibraryAPI.dto.request.User;
 import app.SocialLibraryAPI.dto.response.UserDTO;
 import app.SocialLibraryAPI.entity.Role;
@@ -7,6 +8,7 @@ import app.SocialLibraryAPI.entity.UserEntity;
 import app.SocialLibraryAPI.mappers.UserMapper;
 import app.SocialLibraryAPI.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
@@ -102,5 +104,26 @@ public class UserService {
                     log.error("User not found with email: {}", email);
                     return new EntityNotFoundException("User not found with email: " + email);
                 });
+    }
+
+    @Transactional
+    public UserDTO updateMyProfile(String email, UpdateProfileRequest request) {
+        log.info("Attempting to update profile for user: {}", email);
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("Failed to update profile. User not found: {}", email);
+                    return new EntityNotFoundException("User not found");
+                });
+
+        user.setFullName(request.fullName());
+        user.setAge(request.age());
+        user.setBio(request.bio());
+        user.setProfilePicUrl(request.profilePicUrl());
+
+        UserEntity savedUser = userRepository.save(user);
+        log.info("Successfully updated profile for user: {}", email);
+
+        return UserMapper.toDTO(savedUser);
     }
 }

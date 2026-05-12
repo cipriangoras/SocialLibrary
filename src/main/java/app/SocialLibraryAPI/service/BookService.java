@@ -78,6 +78,13 @@ public class BookService {
         return bookPage.map(BookMapper::toDTO);
     }
 
+    public BookDTO getBookById(Integer id) {
+        log.info("Fetching book with id: {}", id);
+        return bookRepository.findById(id)
+                .map(BookMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + id));
+    }
+
     public BookDTO updateBook(Integer bookId, @Valid CreateBookRequest request) {
         log.info("Attempting to update book with id: {}", bookId);
 

@@ -42,6 +42,12 @@ public class BookController {
         return ResponseEntity.status(200).body(books);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Integer id) {
+        log.info("REST request to get book with id: {}", id);
+        return ResponseEntity.ok(bookService.getBookById(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBook(
             @PathVariable Integer id,

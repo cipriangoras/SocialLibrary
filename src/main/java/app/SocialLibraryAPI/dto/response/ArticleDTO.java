@@ -7,8 +7,10 @@ public record ArticleDTO(
         String title,
         String content,
         String authorName,
+        Long authorId,
         Integer relatedBookId,
         String relatedBookTitle,
         LocalDateTime createdAt,
-        float averageRating
+        int likeCount,
+        int commentCount
 ) {}

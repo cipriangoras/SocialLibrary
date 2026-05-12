@@ -10,5 +10,6 @@ public record FeedItemDTO(
         String contentSnippet,
         Integer relatedBookId,
         String relatedBookTitle,
+        String relatedBookCoverImageUrl,
         LocalDateTime createdAt
 ) {}

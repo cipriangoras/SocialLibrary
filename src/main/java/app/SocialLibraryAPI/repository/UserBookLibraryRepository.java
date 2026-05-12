@@ -15,4 +15,7 @@ public interface UserBookLibraryRepository extends JpaRepository<UserBookLibrary
     Page<UserBookLibraryEntity> findByUser_Email(String email, Pageable pageable);
 
     Page<UserBookLibraryEntity> findByUser_EmailAndStatus(String email, Status status, Pageable pageable);
+
+    Page<UserBookLibraryEntity> findByUser_Id(Long userId, Pageable pageable);
+    Page<UserBookLibraryEntity> findByUser_IdAndStatus(Long userId, Status status, Pageable pageable);
 }

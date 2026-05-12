@@ -54,4 +54,14 @@ public class LibraryController {
         libraryService.removeBookFromLibrary(principal.getName(), bookId);
         return ResponseEntity.status(200).build();
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<LibraryEntryDTO>> getLibraryByUserId(
+            @PathVariable Long userId,
+            @RequestParam(required = false) Status status,
+            @ParameterObject Pageable pageable) {
+
+        log.info("REST request to get library for user ID: {}, status filter: {}", userId, status);
+        return ResponseEntity.status(200).body(libraryService.getUserLibraryById(userId, status, pageable));
+    }
 }

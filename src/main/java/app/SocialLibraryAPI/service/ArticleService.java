@@ -119,5 +119,19 @@ public class ArticleService {
         log.info("Successfully deleted article id: {}", id);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ArticleDTO> getArticlesByAuthorId(Long authorId, Pageable pageable) {
+        log.info("Fetching articles for author ID: {}", authorId);
+
+        // Verificăm dacă autorul există (folosind userRepository injectat deja în constructor)
+        if (!userRepository.existsById(authorId)) {
+            log.error("Author not found with id: {}", authorId);
+            throw new EntityNotFoundException("Author not found with id: " + authorId);
+        }
+
+        return articleRepository.findByAuthor_Id(authorId, pageable)
+                .map(ArticleMapper::toDTO);
+    }
+
 
 }

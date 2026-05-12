@@ -66,7 +66,7 @@ public class ReviewService {
 
         updateBookAverageRating(book);
 
-        return new ReviewDTO(savedReview.getId(), savedReview.getContent(), savedReview.getRating(), savedReview.getCreatedAt(), user.getFullName());
+        return ReviewMapper.toDTO(savedReview);
     }
 
     @Transactional

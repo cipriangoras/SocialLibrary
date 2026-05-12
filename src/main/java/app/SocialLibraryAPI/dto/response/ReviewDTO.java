@@ -6,5 +6,7 @@ public record ReviewDTO(
         String content,
         int rating,
         LocalDateTime createdAt,
-        String authorName
+        String authorName,
+        int likeCount,
+        int commentCount
 ) {}

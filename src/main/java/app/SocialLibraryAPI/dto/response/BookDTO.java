@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 public record BookDTO(
+        Integer id,
         @NotBlank @Size(max = 200)
         String title,
 
@@ -28,7 +29,8 @@ public record BookDTO(
         String coverImageUrl,
 
         @DecimalMin("0.0") @DecimalMax("5.0")
-        float rating,
+        float averageRating,
 
-        Set<GenreDTO> genres
+        Set<GenreDTO> genres,
+        int totalRatingsCount
 ) {}

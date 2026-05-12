@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Integer> {
     Page<ArticleEntity> findAllByOrderByCreatedAtDesc(Pageable pageable);
@@ -16,4 +17,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Integer>
             LocalDateTime cursor,
             Pageable pageable
     );
+
+    Page<ArticleEntity> findByAuthor_Id(Long authorId, Pageable pageable);
+
 }

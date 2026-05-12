@@ -1,9 +1,7 @@
 package app.SocialLibraryAPI.controller;
 
 import app.SocialLibraryAPI.dto.request.CreateArticleRequest;
-import app.SocialLibraryAPI.dto.request.RateArticleRequest;
 import app.SocialLibraryAPI.dto.response.ArticleDTO;
-import app.SocialLibraryAPI.service.ArticleRatingService;
 import app.SocialLibraryAPI.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +19,9 @@ import java.security.Principal;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final ArticleRatingService ratingService;
 
-    public ArticleController(ArticleService articleService, ArticleRatingService ratingService) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.ratingService = ratingService;
     }
 
     @PostMapping
@@ -42,15 +38,6 @@ public class ArticleController {
         return ResponseEntity.status(200).body(articleService.getArticlesFeed(pageable));
     }
 
-    @PutMapping("/{articleId}/rate")
-    public ResponseEntity<Void> rateArticle(
-            @PathVariable Integer articleId,
-            @Valid @RequestBody RateArticleRequest request,
-            Principal principal) {
-        log.info("REST request to rate article id: {} by user: {}", articleId, principal.getName());
-        ratingService.rateArticle(principal.getName(), articleId, request.score());
-        return ResponseEntity.status(200).build();
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ArticleDTO> getArticleById(@PathVariable Integer id) {
@@ -72,5 +59,14 @@ public class ArticleController {
         log.info("REST request to delete article id: {} by user: {}", id, principal.getName());
         articleService.deleteArticle(principal.getName(), id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/author/{authorId}")
+    public ResponseEntity<Page<ArticleDTO>> getArticlesByAuthor(
+            @PathVariable Long authorId,
+            @ParameterObject Pageable pageable) {
+
+        log.info("REST request to get articles by author id: {}", authorId);
+        return ResponseEntity.ok(articleService.getArticlesByAuthorId(authorId, pageable));
     }
 }

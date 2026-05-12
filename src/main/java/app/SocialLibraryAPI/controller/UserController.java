@@ -1,5 +1,6 @@
 package app.SocialLibraryAPI.controller;
 
+import app.SocialLibraryAPI.dto.request.UpdateProfileRequest;
 import app.SocialLibraryAPI.dto.request.User;
 import app.SocialLibraryAPI.dto.response.UserDTO;
 import app.SocialLibraryAPI.entity.UserEntity;
@@ -60,6 +61,15 @@ public class UserController {
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
         UserDTO user = userService.findUserByEmail(principal.getName());
         return ResponseEntity.status(200).body(user);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserDTO> updateMyProfile(
+            @RequestBody @Valid UpdateProfileRequest request,
+            Principal principal) {
+
+        log.info("REST request to update profile for current user: {}", principal.getName());
+        return ResponseEntity.status(200).body(userService.updateMyProfile(principal.getName(), request));
     }
 
 }

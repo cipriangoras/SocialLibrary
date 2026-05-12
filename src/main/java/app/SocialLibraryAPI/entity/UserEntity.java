@@ -59,8 +59,6 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "author")
     private Set<ArticleEntity> articles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<ArticleRating> articleRatings = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
