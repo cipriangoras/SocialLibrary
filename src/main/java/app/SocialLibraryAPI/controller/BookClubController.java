@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -70,5 +71,26 @@ public class BookClubController {
         log.info("REST request to delete book club id: {} by user: {}", id, principal.getName());
         bookClubService.deleteBookClub(principal.getName(), id);
         return ResponseEntity.status(200).build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookClubDTO> getClubById(@PathVariable Integer id) {
+        log.info("REST request to fetch book club by id: {}", id);
+        return ResponseEntity.status(200).body(bookClubService.getBookClubById(id));
+    }
+
+    @PutMapping("/{clubId}/current-book")
+    public ResponseEntity<BookClubDTO> changeCurrentBook(
+            @PathVariable Integer clubId,
+            @RequestParam Integer newBookId,
+            Principal principal) {
+        log.info("REST request to change current book to {} for club id: {} by user: {}", newBookId, clubId, principal.getName());
+        return ResponseEntity.status(200).body(bookClubService.changeCurrentBook(principal.getName(), clubId, newBookId));
+    }
+
+    @GetMapping("/{clubId}/sessions")
+    public ResponseEntity<List<ClubSessionDTO>> getClubSessions(@PathVariable Integer clubId) {
+        log.info("REST request to get sessions for club id: {}", clubId);
+        return ResponseEntity.status(200).body(bookClubService.getClubSessions(clubId));
     }
 }

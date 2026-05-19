@@ -9,8 +9,6 @@ import app.SocialLibraryAPI.entity.ClubSession;
 import java.util.List;
 
 public class BookClubMapper {
-// În app.SocialLibraryAPI.mappers.BookClubMapper
-
     public static BookClubDTO toClubDTO(BookClubEntity club) {
 
         List<String> previousReads = club.getPastBooks().stream()

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -157,6 +158,61 @@ public class BookClubService {
 
         bookClubRepository.delete(club);
         log.info("Successfully deleted book club id: {}", clubId);
+    }
+
+    @Transactional(readOnly = true)
+    public BookClubDTO getBookClubById(Integer clubId) {
+        log.info("Fetching book club details for id: {}", clubId);
+
+        BookClubEntity club = bookClubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Book club not found with id: " + clubId));
+
+        return BookClubMapper.toClubDTO(club);
+    }
+
+    @Transactional
+    public BookClubDTO changeCurrentBook(String userEmail, Integer clubId, Integer newBookId) {
+        log.info("Attempting to change current book to {} for club id: {} by user: {}", newBookId, clubId, userEmail);
+
+        BookClubEntity club = bookClubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
+
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+
+        boolean isCreator = club.getUser().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+
+        if (!isCreator && !isAdmin) {
+            log.error("User {} is not authorized to change the book for club {}", userEmail, clubId);
+            throw new IllegalStateException("Only the club creator or an Admin can change the current book.");
+        }
+
+        BookEntity newBook = bookRepository.findById(newBookId)
+                .orElseThrow(() -> new EntityNotFoundException("The new book was not found."));
+
+        if (club.getBook() != null) {
+            club.getPastBooks().add(club.getBook());
+        }
+
+        club.setBook(newBook);
+        BookClubEntity updatedClub = bookClubRepository.save(club);
+
+        log.info("Successfully changed book for club id: {}", clubId);
+        return BookClubMapper.toClubDTO(updatedClub);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClubSessionDTO> getClubSessions(Integer clubId) {
+        log.info("Fetching sessions for book club id: {}", clubId);
+
+        if (!bookClubRepository.existsById(clubId)) {
+            throw new EntityNotFoundException("Book club not found.");
+        }
+
+        return sessionRepository.findByBookClub_IdOrderByStartTimeAsc(clubId).stream()
+                .map(BookClubMapper::toSessionDTO)
+                .toList();
     }
 
 

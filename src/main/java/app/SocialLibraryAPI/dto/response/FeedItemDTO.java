@@ -3,7 +3,7 @@ package app.SocialLibraryAPI.dto.response;
 import java.time.LocalDateTime;
 
 public record FeedItemDTO(
-        String type, // Va fi REVIEW sau ARTICLE
+        String type, // REVIEW sau ARTICLE
         Integer itemId,
         String authorName,
         String authorProfilePicUrl,
