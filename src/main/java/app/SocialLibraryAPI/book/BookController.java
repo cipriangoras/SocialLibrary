@@ -3,6 +3,7 @@ package app.SocialLibraryAPI.book;
 
 import app.SocialLibraryAPI.book.dto.CreateBookRequest;
 import app.SocialLibraryAPI.book.dto.BookDTO;
+import app.SocialLibraryAPI.googleBooksAPI.GoogleBooksService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -17,9 +18,18 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookService bookService;
+    private final GoogleBooksService googleBooksService;
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, GoogleBooksService googleBooksService) {
         this.bookService = bookService;
+        this.googleBooksService =googleBooksService;
+    }
+
+
+    @PostMapping("/import")
+    public ResponseEntity<BookDTO> importExternalBook(@RequestParam String title) {
+        BookDTO importedBook = googleBooksService.importBookByTitle(title);
+        return ResponseEntity.status(201).body(importedBook);
     }
 
     @PostMapping
