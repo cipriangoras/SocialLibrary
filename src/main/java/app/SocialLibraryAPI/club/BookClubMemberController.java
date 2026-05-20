@@ -34,4 +34,19 @@ public class BookClubMemberController {
         memberService.kickMember(principal.getName(), clubId, userIdToKick);
         return ResponseEntity.status(200).build();
     }
+
+    @PutMapping("/{userIdToChangeRole}/role")
+    public ResponseEntity<Void> changeMemberRole(
+            @PathVariable Integer clubId,
+            @PathVariable Long userIdToChangeRole,
+            @RequestParam("newRole") String newRole,
+            Principal principal){
+
+        log.info("REST request to change role to {} for user id: {} in club id: {} by user: {}", newRole, userIdToChangeRole, clubId, principal.getName());
+
+        memberService.changeClubRole(principal.getName(), clubId, userIdToChangeRole, newRole);
+
+        return ResponseEntity.status(200).build();
+    }
+
 }

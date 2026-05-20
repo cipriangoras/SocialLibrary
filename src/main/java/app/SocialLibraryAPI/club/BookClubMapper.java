@@ -29,6 +29,7 @@ public class BookClubMapper {
                 club.getBook().getTitle(),
                 booksCompleted,
                 discussions,
+                club.getMemberCount(),
                 club.getAvgAttendance(),
                 previousReads
         );
@@ -38,6 +39,7 @@ public class BookClubMapper {
         return new ClubSessionDTO(
                 session.getId(),
                 session.getTitle(),
+                session.getDescription(),
                 session.getStartTime(),
                 session.getBookClub().getId()
         );

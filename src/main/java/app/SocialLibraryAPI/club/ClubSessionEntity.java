@@ -26,10 +26,16 @@ public class ClubSessionEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChatMessageEntity> messages = new HashSet<>();
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
 
 }

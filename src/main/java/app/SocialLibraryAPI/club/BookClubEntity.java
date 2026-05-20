@@ -33,6 +33,8 @@ public class BookClubEntity {
 
     private float avgAttendance = 0.0f;
 
+    private int memberCount = 0;
+
     @ManyToMany
     @JoinTable(
             name = "book_club_past_books",
@@ -54,6 +56,8 @@ public class BookClubEntity {
 
     @OneToMany(mappedBy = "bookClub", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ClubSessionEntity> sessions = new HashSet<>();
+
+
 
 
 }
