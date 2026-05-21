@@ -1,13 +1,16 @@
 package app.SocialLibraryAPI.feed.dto;
 
+import app.SocialLibraryAPI.feed.FeedType;
+
 import java.time.LocalDateTime;
 
 public record FeedItemDTO(
-        String type, // REVIEW sau ARTICLE
         Integer itemId,
+        FeedType type,
         String authorName,
         String authorProfilePicUrl,
-        String contentSnippet,
+        String title,
+        String content,
         Integer relatedBookId,
         String relatedBookTitle,
         String relatedBookCoverImageUrl,

@@ -34,7 +34,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/test/**", "/ws/**").permitAll()
-                        .requestMatchers("/api/management/users/me", "/api/management/users/*", "/api/management/books/all", "/api/management/books/*", "/api/management/genres", "/api/management/genres/*").authenticated()
+
+                        .requestMatchers("/api/management/**").hasRole("ADMIN")
+
+                        .requestMatchers("/api/users/me").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
