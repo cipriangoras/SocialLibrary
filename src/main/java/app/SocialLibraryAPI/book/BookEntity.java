@@ -36,10 +36,12 @@ public class BookEntity {
     @Column(unique = true)
     private String isbn;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private LocalDate publicationYear;
 
+    @Column(length = 1000)
     private String coverImageUrl;
 
     private float rating;

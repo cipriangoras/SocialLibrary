@@ -17,13 +17,13 @@ public record CreateBookRequest (
         //@Pattern(regexp = "^[0-9-]+$", message = "ISBN must contain only digits and dashes")
         String isbn,
 
-        @Size(max = 2000)
+        @Size(max = 10000)
         String description,
 
         @PastOrPresent
         LocalDate publicationYear,
 
-        @Size(max = 500)
+        @Size(max = 1000)
         //@URL
         String coverImageUrl,
 
