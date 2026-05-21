@@ -31,4 +31,8 @@ public class BookClubMembersEntity {
     private UserEntity user;
 
     private LocalDateTime joinedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ClubRole clubRole = ClubRole.MEMBER;
 }

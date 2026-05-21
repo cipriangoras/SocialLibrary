@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,13 +29,15 @@ public class BookClubService {
     private final ClubSessionRepository sessionRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
-    public BookClubService(BookClubRepository bookClubRepository, BookClubMembersRepository membersRepository, ClubSessionRepository sessionRepository, UserRepository userRepository, BookRepository bookRepository) {
+    public BookClubService(BookClubRepository bookClubRepository, BookClubMembersRepository membersRepository, ClubSessionRepository sessionRepository, UserRepository userRepository, BookRepository bookRepository, ChatMessageRepository chatMessageRepository) {
         this.bookClubRepository = bookClubRepository;
         this.membersRepository = membersRepository;
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     @Transactional
@@ -84,6 +87,7 @@ public class BookClubService {
         membership.setUser(user);
         membership.setJoinedAt(LocalDateTime.now());
 
+        club.setMemberCount(club.getMemberCount() + 1);
         membersRepository.save(membership);
         log.info("User {} successfully joined club {}", userEmail, clubId);
     }
@@ -95,10 +99,15 @@ public class BookClubService {
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
+        BookClubEntity club = bookClubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
+
         BookClubMembersIdEntity membersId = new BookClubMembersIdEntity(clubId, user.getId());
 
         BookClubMembersEntity membership = membersRepository.findById(membersId)
                 .orElseThrow(() -> new EntityNotFoundException("You are not a member of this club."));
+
+        club.setMemberCount(club.getMemberCount() - 1);
 
         membersRepository.delete(membership);
         log.info("User {} successfully left club {}", userEmail, clubId);
@@ -116,9 +125,18 @@ public class BookClubService {
         boolean isCreator = club.getUser().getId().equals(user.getId());
         boolean isAdmin = user.getRole() == Role.ADMIN;
 
-        if (!isCreator && !isAdmin) {
+        boolean isClubModerator = false;
+
+        BookClubMembersIdEntity actionUserMembershipId = new BookClubMembersIdEntity(clubId, user.getId());
+        Optional<BookClubMembersEntity> actionUserMembership = membersRepository.findById(actionUserMembershipId);
+
+        if (actionUserMembership.isPresent() && actionUserMembership.get().getClubRole() == ClubRole.MODERATOR) {
+            isClubModerator = true;
+        }
+
+        if (!isCreator && !isAdmin && !isClubModerator) {
             log.error("User {} is not authorized to add sessions to club {}", userEmail, clubId);
-            throw new IllegalStateException("You don't have permission to create sessions for this club. Only the creator or an Admin can do this.");
+            throw new IllegalStateException("You don't have permission to create sessions for this club. Only the creator, an Admin, or a Moderator can do this.");
         }
 
         ClubSessionEntity session = new ClubSessionEntity();
@@ -184,10 +202,17 @@ public class BookClubService {
 
         boolean isCreator = club.getUser().getId().equals(user.getId());
         boolean isAdmin = user.getRole() == Role.ADMIN;
+        boolean isClubModerator = false;
 
-        if (!isCreator && !isAdmin) {
+        BookClubMembersIdEntity actionUserMembershipId = new BookClubMembersIdEntity(clubId, user.getId());
+        Optional<BookClubMembersEntity> actionUserMembership = membersRepository.findById(actionUserMembershipId);
+
+        if (actionUserMembership.isPresent() && actionUserMembership.get().getClubRole() == ClubRole.MODERATOR) {
+            isClubModerator = true;
+        }
+        if (!isCreator && !isAdmin && !isClubModerator) {
             log.error("User {} is not authorized to change the book for club {}", userEmail, clubId);
-            throw new IllegalStateException("Only the club creator or an Admin can change the current book.");
+            throw new IllegalStateException("Only the club creator, an Admin or an Moderator can change the current book.");
         }
 
         BookEntity newBook = bookRepository.findById(newBookId)
@@ -215,6 +240,72 @@ public class BookClubService {
         return sessionRepository.findByBookClub_IdOrderByStartTimeAsc(clubId).stream()
                 .map(BookClubMapper::toSessionDTO)
                 .toList();
+    }
+
+    @Transactional
+    public ClubSessionDTO closeSession(String userEmail, Integer clubId, Integer sessionId) {
+        log.info("User {} attempting to close session id: {} from club id: {}", userEmail, sessionId, clubId);
+
+        BookClubEntity club = bookClubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
+
+        ClubSessionEntity session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new EntityNotFoundException("Session not found."));
+
+        if (!session.getBookClub().getId().equals(clubId)) {
+            throw new IllegalArgumentException("Session does not belong to this book club.");
+        }
+
+        if (!session.isActive()) {
+            throw new IllegalStateException("This session is already closed.");
+        }
+
+        UserEntity user = userRepository.findByEmail(userEmail).orElseThrow();
+        boolean isCreator = club.getUser().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+        boolean isClubModerator = false;
+
+        BookClubMembersIdEntity actionUserMembershipId = new BookClubMembersIdEntity(clubId, user.getId());
+        Optional<BookClubMembersEntity> actionUserMembership = membersRepository.findById(actionUserMembershipId);
+
+        if (actionUserMembership.isPresent() && actionUserMembership.get().getClubRole() == ClubRole.MODERATOR) {
+            isClubModerator = true;
+        }
+
+        if (!isCreator && !isAdmin && !isClubModerator) {
+            throw new IllegalStateException("You don't have permission to close sessions for this club.");
+        }
+
+        session.setActive(false);
+        sessionRepository.save(session);
+
+        recalculateClubAttendance(club, session);
+
+        log.info("Successfully closed session id: {}", sessionId);
+        return BookClubMapper.toSessionDTO(session);
+    }
+
+    private void recalculateClubAttendance(BookClubEntity club, ClubSessionEntity session) {
+        int totalMembers = club.getMembers() != null ? club.getMembers().size() : 0;
+        if (totalMembers == 0) {
+            return;
+        }
+
+        long uniqueParticipants = chatMessageRepository.countUniqueParticipantsBySessionId(session.getId());
+
+        float currentSessionAttendance = ((float) uniqueParticipants / totalMembers) * 100.0f;
+
+        long closedSessionsCount = sessionRepository.countByBookClub_IdAndIsActiveFalse(club.getId());
+
+        if (closedSessionsCount <= 1) {
+            club.setAvgAttendance(Math.round(currentSessionAttendance * 10.0f) / 10.0f);
+        } else {
+            float newAvg = ((club.getAvgAttendance() * (closedSessionsCount - 1)) + currentSessionAttendance) / closedSessionsCount;
+            club.setAvgAttendance(Math.round(newAvg * 10.0f) / 10.0f);
+        }
+
+        bookClubRepository.save(club);
+        log.debug("Recalculated attendance for club id: {}. New average: {}%", club.getId(), club.getAvgAttendance());
     }
 
 

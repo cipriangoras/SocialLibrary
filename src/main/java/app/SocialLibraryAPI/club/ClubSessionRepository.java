@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ClubSessionRepository extends JpaRepository<ClubSessionEntity, Integer> {
     List<ClubSessionEntity> findByBookClub_IdOrderByStartTimeAsc(Integer clubId);
+    long countByBookClub_IdAndIsActiveFalse(Integer clubId);
 }

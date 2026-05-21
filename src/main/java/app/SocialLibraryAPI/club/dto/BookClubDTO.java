@@ -17,6 +17,7 @@ public record BookClubDTO(
         // Date calculate
         int booksCompleted,
         int discussionsCount,
+        int membersCount,
         float avgAttendance,
         List<String> previousReads
 ) {}
