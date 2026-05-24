@@ -154,7 +154,8 @@ public class BookClubService {
     public Page<BookClubDTO> getAllBookClubs(String bookTitle, Pageable pageable) {
         log.info("Fetching all book clubs with bookTitle filter: {}", bookTitle);
 
-        return bookClubRepository.findWithFilters(bookTitle, pageable)
+
+        return bookClubRepository.findBookClubEntityByBook_TitleContainingIgnoreCase(bookTitle, pageable)
                 .map(BookClubMapper::toClubDTO);
     }
 
@@ -309,4 +310,26 @@ public class BookClubService {
     }
 
 
+    @Transactional(readOnly = true)
+        public ClubSessionDTO getSessionById(Integer clubId, Integer sessionId) {
+            log.info("Fetching session details for sessionId: {} in clubId: {}", sessionId, clubId);
+
+            if (!bookClubRepository.existsById(clubId)) {
+                log.error("Book club check failed: club id {} not found", clubId);
+                throw new EntityNotFoundException("Book club not found.");
+            }
+
+            ClubSessionEntity session = sessionRepository.findById(sessionId)
+                    .orElseThrow(() -> {
+                        log.error("Session check failed: session id {} not found", sessionId);
+                        return new EntityNotFoundException("Session not found.");
+                    });
+
+            if (!session.getBookClub().getId().equals(clubId)) {
+                log.error("Mismatch: Session id {} does not belong to club id {}", sessionId, clubId);
+                throw new IllegalArgumentException("Session does not belong to this book club.");
+            }
+
+            return BookClubMapper.toSessionDTO(session);
+        }
 }

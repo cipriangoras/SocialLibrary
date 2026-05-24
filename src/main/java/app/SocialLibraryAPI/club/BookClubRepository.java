@@ -19,4 +19,6 @@ public interface BookClubRepository extends JpaRepository<BookClubEntity, Intege
 
     List<BookClubEntity> findByUser_IdInAndCreatedAtBeforeOrderByCreatedAtDesc(
             List<Long> userIds, LocalDateTime cursor, Pageable pageable);
+
+    Page<BookClubEntity> findBookClubEntityByBook_TitleContainingIgnoreCase(String bookTitle, Pageable pageable);
 }

@@ -1,5 +1,6 @@
 package app.SocialLibraryAPI.club;
 
+import app.SocialLibraryAPI.club.dto.ClubSessionDTO;
 import app.SocialLibraryAPI.club.dto.SendChatMessageRequest;
 import app.SocialLibraryAPI.club.dto.ChatMessageDTO;
 import lombok.extern.slf4j.Slf4j;

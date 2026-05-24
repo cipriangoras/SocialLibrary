@@ -7,5 +7,6 @@ public record ClubSessionDTO(
         String title,
         String description,
         LocalDateTime startTime,
-        Integer bookClubId
+        Integer bookClubId,
+        boolean isActive
 ) {}

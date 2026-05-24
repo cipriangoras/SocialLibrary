@@ -68,4 +68,14 @@ public class ArticleController {
         log.info("REST request to get articles by author id: {}", authorId);
         return ResponseEntity.ok(articleService.getArticlesByAuthorId(authorId, pageable));
     }
+
+    @GetMapping
+    public ResponseEntity<Page<ArticleDTO>> getArticlesByBookTitle(
+            @RequestParam(required = false) String bookTitle,
+            @ParameterObject Pageable pageable){
+
+        log.info("REST request to get articles by bookTitle: {}", bookTitle);
+
+        return ResponseEntity.ok(articleService.getArticlesByBookTitle(bookTitle, pageable));
+    }
 }

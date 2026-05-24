@@ -130,4 +130,17 @@ public class ArticleService {
     }
 
 
+    public Page<ArticleDTO> getArticlesByBookTitle(String bookTitle, Pageable pageable) {
+        Page<ArticleEntity> articlesPage;
+        log.info("Fetching articles bt book title : {}", bookTitle);
+
+        if (bookTitle != null && !bookTitle.trim().isEmpty()) {
+            articlesPage = articleRepository.findByRelatedBook_TitleContainingIgnoreCase(bookTitle, pageable);
+        } else {
+            articlesPage = articleRepository.findAll(pageable);
+        }
+
+        return articlesPage.map(ArticleMapper::toDTO);
+    }
+
 }

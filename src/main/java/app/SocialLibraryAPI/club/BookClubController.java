@@ -59,7 +59,7 @@ public class BookClubController {
 
     @GetMapping
     public ResponseEntity<Page<BookClubDTO>> getAllClubs(
-            @RequestParam(required = false) String bookTitle,
+            @RequestParam(required = false, defaultValue = "") String bookTitle,
             @ParameterObject Pageable pageable) {
         log.info("REST request to get all book clubs filtered by book title: {}", bookTitle);
         return ResponseEntity.status(200).body(bookClubService.getAllBookClubs(bookTitle, pageable));
@@ -92,4 +92,22 @@ public class BookClubController {
         log.info("REST request to get sessions for club id: {}", clubId);
         return ResponseEntity.status(200).body(bookClubService.getClubSessions(clubId));
     }
+
+    @GetMapping("/{clubId}/sessions/{sessionId}")
+    public ResponseEntity<ClubSessionDTO> getSessionById(@PathVariable Integer clubId, @PathVariable Integer sessionId) {
+        log.info("REST request to get session by id: {}", sessionId);
+        return ResponseEntity.status(200).body(bookClubService.getSessionById(clubId, sessionId));
+    }
+
+    @PutMapping("/{clubId}/sessions/{sessionId}/close")
+    public ResponseEntity<ClubSessionDTO> closeSession(
+            @PathVariable Integer clubId,
+            @PathVariable Integer sessionId,
+            Principal principal) {
+        log.info("REST request to close session id: {} in club id: {} by user: {}", sessionId, clubId, principal.getName());
+
+        ClubSessionDTO closedSession = bookClubService.closeSession(principal.getName(), clubId, sessionId);
+        return ResponseEntity.status(200).body(closedSession);
+    }
+
 }

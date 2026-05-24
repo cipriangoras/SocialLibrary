@@ -41,7 +41,8 @@ public class BookClubMapper {
                 session.getTitle(),
                 session.getDescription(),
                 session.getStartTime(),
-                session.getBookClub().getId()
+                session.getBookClub().getId(),
+                session.isActive()
         );
     }
 }

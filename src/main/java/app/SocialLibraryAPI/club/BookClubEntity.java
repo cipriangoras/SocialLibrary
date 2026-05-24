@@ -51,7 +51,7 @@ public class BookClubEntity {
     @JoinColumn(name = "book_id")
     private BookEntity book;
 
-    @OneToMany(mappedBy = "bookClub")
+    @OneToMany(mappedBy = "bookClub", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookClubMembersEntity> members = new HashSet<>();
 
     @OneToMany(mappedBy = "bookClub", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -18,4 +18,5 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Integer>
 
     Page<ArticleEntity> findByAuthor_Id(Long authorId, Pageable pageable);
 
+    Page<ArticleEntity> findByRelatedBook_TitleContainingIgnoreCase(String bookTitle, Pageable pageable);
 }
