@@ -12,6 +12,6 @@ public interface ClubSessionRepository extends JpaRepository<ClubSessionEntity, 
 
     List<ClubSessionEntity> findByStartTimeBeforeOrderByStartTimeDesc(LocalDateTime cursor, Pageable pageable);
 
-    List<ClubSessionEntity> findByBookClub_User_IdInAndStartTimeBeforeOrderByStartTimeDesc(
+    List<ClubSessionEntity> findByBookClub_User_IdInAndCreatedAtBeforeOrderByCreatedAtDesc(
             List<Long> userIds, LocalDateTime cursor, Pageable pageable);
 }

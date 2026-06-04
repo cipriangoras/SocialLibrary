@@ -4,7 +4,10 @@ import app.SocialLibraryAPI.article.ArticleEntity;
 import app.SocialLibraryAPI.club.BookClubEntity;
 import app.SocialLibraryAPI.club.ClubSessionEntity;
 import app.SocialLibraryAPI.feed.dto.FeedItemDTO;
+import app.SocialLibraryAPI.library.UserBookLibraryEntity;
 import app.SocialLibraryAPI.review.ReviewEntity;
+
+import java.time.LocalDateTime;
 
 public class FeedMapper {
     public static FeedItemDTO toDTO(ReviewEntity review){
@@ -54,20 +57,36 @@ public class FeedMapper {
         return new FeedItemDTO(
                 session.getId(),
                 FeedType.CLUB_SESSION,
-
                 "Club Moderator",
-
                 session.getBookClub().getBook().getCoverImageUrl(),
-
                 "Sesiune nouă programată în " + session.getBookClub().getName(),
-
                 "Tema discuției: " + session.getTitle() + " | Începe la: " + session.getStartTime(),
+                null,
+                null,
+                null,
+                session.getCreatedAt() != null ? session.getCreatedAt() : session.getStartTime() // <-- ACTUALIZAT AICI
+        );
+    }
 
-                null,
-                null,
-                null,
-                session.getStartTime()
-    );
+    public static FeedItemDTO toDTO(UserBookLibraryEntity library) {
+        String statusText = switch (library.getStatus()) {
+            case WANT_TO_READ -> "Vrea să citească";
+            case READING -> "Citește acum";
+            case COMPLETED -> "A terminat de citit";
+        };
+
+        return new FeedItemDTO(
+                library.getId(),
+                FeedType.LIBRARY_UPDATE,
+                library.getUser().getFullName(),
+                library.getUser().getProfilePicUrl(),
+                "Status Actualizat",
+                statusText,
+                library.getBook().getId(),
+                library.getBook().getTitle(),
+                library.getBook().getCoverImageUrl(),
+                library.getUpdatedAt() != null ? library.getUpdatedAt() : LocalDateTime.now()
+        );
     }
 
 

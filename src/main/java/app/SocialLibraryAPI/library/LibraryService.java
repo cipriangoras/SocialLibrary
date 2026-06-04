@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 public class LibraryService {
@@ -52,6 +54,7 @@ public class LibraryService {
 
         entry.setStatus(request.status());
         entry.setFavorite(request.isFavorite());
+        entry.setUpdatedAt(LocalDateTime.now());
 
         UserBookLibraryEntity saved = libraryRepository.save(entry);
         log.info("Successfully updated library entry id: {} for book id: {}", saved.getId(), bookId);

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,6 +23,8 @@ public class UserBookLibraryEntity {
 
     private Status status;
     private boolean isFavorite;
+
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "book_id")

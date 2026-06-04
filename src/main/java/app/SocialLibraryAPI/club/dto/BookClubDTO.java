@@ -13,11 +13,13 @@ public record BookClubDTO(
         String creatorName,
         Integer currentBookId,
         String currentBookTitle,
+        String currentBookCoverImageUrl,
 
         // Date calculate
         int booksCompleted,
         int discussionsCount,
         int membersCount,
         float avgAttendance,
-        List<String> previousReads
+        List<String> previousReads,
+        String sessionFrequency
 ) {}

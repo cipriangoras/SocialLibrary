@@ -143,6 +143,7 @@ public class BookClubService {
         session.setBookClub(club);
         session.setTitle(request.title());
         session.setStartTime(request.startTime());
+        session.setCreatedAt(LocalDateTime.now());
 
         ClubSessionEntity savedSession = sessionRepository.save(session);
         log.info("Successfully added session id: {}", savedSession.getId());

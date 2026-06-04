@@ -6,6 +6,8 @@ import app.SocialLibraryAPI.club.ClubSessionEntity;
 import app.SocialLibraryAPI.club.ClubSessionRepository;
 import app.SocialLibraryAPI.feed.dto.FeedItemDTO;
 import app.SocialLibraryAPI.article.ArticleEntity;
+import app.SocialLibraryAPI.library.UserBookLibraryEntity;
+import app.SocialLibraryAPI.library.UserBookLibraryRepository;
 import app.SocialLibraryAPI.review.ReviewEntity;
 import app.SocialLibraryAPI.user.UserEntity;
 import app.SocialLibraryAPI.article.ArticleRepository;
@@ -31,13 +33,15 @@ public class FeedService {
     private final ArticleRepository articleRepository;
     private final BookClubRepository bookClubRepository;
     private final ClubSessionRepository clubSessionRepository;
+    private final UserBookLibraryRepository userBookLibraryRepository;
 
-    public FeedService(UserRepository userRepository, ReviewRepository reviewRepository, ArticleRepository articleRepository, BookClubRepository bookClubRepository, ClubSessionRepository clubSessionRepository) {
+    public FeedService(UserRepository userRepository, ReviewRepository reviewRepository, ArticleRepository articleRepository, BookClubRepository bookClubRepository, ClubSessionRepository clubSessionRepository, UserBookLibraryRepository userBookLibraryRepository) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.articleRepository = articleRepository;
         this.bookClubRepository = bookClubRepository;
         this.clubSessionRepository = clubSessionRepository;
+        this.userBookLibraryRepository = userBookLibraryRepository;
     }
 
     @Transactional(readOnly = true)
@@ -64,26 +68,28 @@ public class FeedService {
 
         List<ReviewEntity> reviews = reviewRepository.findByUser_IdInAndCreatedAtLessThanOrderByCreatedAtDesc(
                 followingIds, cursor, limitRequest);
-        for (var r : reviews) {
-            feed.add(FeedMapper.toDTO(r));
-        }
+        for (var r : reviews) feed.add(FeedMapper.toDTO(r));
 
         List<ArticleEntity> articles = articleRepository.findByAuthor_IdInAndCreatedAtLessThanOrderByCreatedAtDesc(
                 followingIds, cursor, limitRequest);
-        for (var a : articles) {
-            feed.add(FeedMapper.toDTO(a));
-        }
+        for (var a : articles) feed.add(FeedMapper.toDTO(a));
 
         List<BookClubEntity> clubs = bookClubRepository.findByUser_IdInAndCreatedAtBeforeOrderByCreatedAtDesc(
                 followingIds, cursor, limitRequest);
-        for (var c : clubs) {
-            feed.add(FeedMapper.toDTO(c));
-        }
+        for (var c : clubs) feed.add(FeedMapper.toDTO(c));
 
-        List<ClubSessionEntity> sessions = clubSessionRepository.findByBookClub_User_IdInAndStartTimeBeforeOrderByStartTimeDesc(
+        List<ClubSessionEntity> sessions = clubSessionRepository.findByBookClub_User_IdInAndCreatedAtBeforeOrderByCreatedAtDesc(
                 followingIds, cursor, limitRequest);
         for (var s : sessions) {
             feed.add(FeedMapper.toDTO(s));
+        }
+
+        List<UserBookLibraryEntity> libraryUpdates = userBookLibraryRepository.findByUser_IdInAndUpdatedAtLessThanOrderByUpdatedAtDesc(
+                followingIds, cursor, limitRequest);
+        for (var l : libraryUpdates) {
+            if (l.getUpdatedAt() != null) {
+                feed.add(FeedMapper.toDTO(l));
+            }
         }
 
         feed.sort(Comparator.comparing(FeedItemDTO::createdAt).reversed());
