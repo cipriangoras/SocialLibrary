@@ -18,8 +18,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
     Page<ReviewEntity> findByBook_Id(Integer bookId, Pageable pageable);
 
-    List<ReviewEntity> findByUser_IdInOrderByCreatedAtDesc(List<Long> userIds);
-
     List<ReviewEntity> findByUser_IdInAndCreatedAtLessThanOrderByCreatedAtDesc(
             List<Long> userIds,
             LocalDateTime cursor,

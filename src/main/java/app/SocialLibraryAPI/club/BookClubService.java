@@ -152,11 +152,14 @@ public class BookClubService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BookClubDTO> getAllBookClubs(String bookTitle, Pageable pageable) {
-        log.info("Fetching all book clubs with bookTitle filter: {}", bookTitle);
+    public Page<BookClubDTO> getAllBookClubs(String search, Pageable pageable) {
+        log.info("Fetching all book clubs with search filter: {}", search);
 
+        String searchParam = (search == null || search.trim().isEmpty())
+                ? "%"
+                : "%" + search.trim() + "%";
 
-        return bookClubRepository.findBookClubEntityByBook_TitleContainingIgnoreCase(bookTitle, pageable)
+        return bookClubRepository.searchBookClubs(searchParam, pageable)
                 .map(BookClubMapper::toClubDTO);
     }
 
@@ -193,8 +196,8 @@ public class BookClubService {
     }
 
     @Transactional
-    public BookClubDTO changeCurrentBook(String userEmail, Integer clubId, Integer newBookId) {
-        log.info("Attempting to change current book to {} for club id: {} by user: {}", newBookId, clubId, userEmail);
+    public BookClubDTO changeCurrentBook(String userEmail, Integer clubId, String newBookTitle) {
+        log.info("Attempting to change current book to '{}' for club id: {} by user: {}", newBookTitle, clubId, userEmail);
 
         BookClubEntity club = bookClubRepository.findById(clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
@@ -212,21 +215,22 @@ public class BookClubService {
         if (actionUserMembership.isPresent() && actionUserMembership.get().getClubRole() == ClubRole.MODERATOR) {
             isClubModerator = true;
         }
+
         if (!isCreator && !isAdmin && !isClubModerator) {
             log.error("User {} is not authorized to change the book for club {}", userEmail, clubId);
             throw new IllegalStateException("Only the club creator, an Admin or an Moderator can change the current book.");
         }
 
-        BookEntity newBook = bookRepository.findById(newBookId)
-                .orElseThrow(() -> new EntityNotFoundException("The new book was not found."));
+        BookEntity newBook = bookRepository.findFirstByTitleIgnoreCase(newBookTitle)
+                .orElseThrow(() -> new EntityNotFoundException("The new book with title '" + newBookTitle + "' was not found."));
 
         if (club.getBook() != null) {
             club.getPastBooks().add(club.getBook());
         }
 
         club.setBook(newBook);
-        BookClubEntity updatedClub = bookClubRepository.save(club);
 
+        BookClubEntity updatedClub = bookClubRepository.save(club);
         log.info("Successfully changed book for club id: {}", clubId);
         return BookClubMapper.toClubDTO(updatedClub);
     }
@@ -333,4 +337,59 @@ public class BookClubService {
 
             return BookClubMapper.toSessionDTO(session);
         }
+
+    @Transactional
+    public BookClubDTO updateBookClub(String userEmail, Integer clubId, CreateBookClubRequest request) {
+        log.info("Attempting to update book club id: {} by user: {}", clubId, userEmail);
+
+        BookClubEntity club = bookClubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Book club not found."));
+
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+
+        boolean isCreator = club.getUser().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+        boolean isClubModerator = false;
+
+        BookClubMembersIdEntity actionUserMembershipId = new BookClubMembersIdEntity(clubId, user.getId());
+        Optional<BookClubMembersEntity> actionUserMembership = membersRepository.findById(actionUserMembershipId);
+
+        if (actionUserMembership.isPresent() && actionUserMembership.get().getClubRole() == ClubRole.MODERATOR) {
+            isClubModerator = true;
+        }
+
+        if (!isCreator && !isAdmin && !isClubModerator) {
+            throw new IllegalStateException("You don't have permission to update this club.");
+        }
+
+        BookEntity newBook = bookRepository.findById(request.bookId())
+                .orElseThrow(() -> new EntityNotFoundException("Book not found."));
+
+        club.setName(request.name());
+        club.setDescription(request.description());
+        club.setClubGuidelines(request.clubGuidelines());
+
+        if (club.getBook() == null || !club.getBook().getId().equals(newBook.getId())) {
+            if (club.getBook() != null) {
+                club.getPastBooks().add(club.getBook());
+            }
+            club.setBook(newBook);
+        }
+
+        BookClubEntity updatedClub = bookClubRepository.save(club);
+        log.info("Successfully updated book club id: {}", clubId);
+        return BookClubMapper.toClubDTO(updatedClub);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookClubDTO> getUserClubs(Long userId) {
+        log.info("Fetching clubs for user id: {}", userId);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        return user.getBookClubMemberships().stream()
+                .map(membership -> BookClubMapper.toClubDTO(membership.getBookClub()))
+                .toList();
+    }
 }

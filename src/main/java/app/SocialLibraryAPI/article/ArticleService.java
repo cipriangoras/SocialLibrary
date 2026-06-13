@@ -58,7 +58,7 @@ public class ArticleService {
     @Transactional(readOnly = true)
     public Page<ArticleDTO> getArticlesFeed(Pageable pageable) {
         log.info("Fetching article feed");
-        return articleRepository.findAllByOrderByCreatedAtDesc(pageable).map(ArticleMapper::toDTO);
+        return articleRepository.findAllWithDetailsOrderByCreatedAtDesc(pageable).map(ArticleMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
@@ -128,19 +128,14 @@ public class ArticleService {
         return articleRepository.findByAuthor_Id(authorId, pageable)
                 .map(ArticleMapper::toDTO);
     }
+    public Page<ArticleDTO> searchArticles(String search, Pageable pageable) {
+        log.info("Fetching articles by search filter: {}", search);
 
+        String searchParam = (search == null || search.trim().isEmpty())
+                ? "%"
+                : "%" + search.trim() + "%";
 
-    public Page<ArticleDTO> getArticlesByBookTitle(String bookTitle, Pageable pageable) {
-        Page<ArticleEntity> articlesPage;
-        log.info("Fetching articles bt book title : {}", bookTitle);
-
-        if (bookTitle != null && !bookTitle.trim().isEmpty()) {
-            articlesPage = articleRepository.findByRelatedBook_TitleContainingIgnoreCase(bookTitle, pageable);
-        } else {
-            articlesPage = articleRepository.findAll(pageable);
-        }
-
-        return articlesPage.map(ArticleMapper::toDTO);
+        return articleRepository.findWithFilters(searchParam, pageable).map(ArticleMapper::toDTO);
     }
 
 }

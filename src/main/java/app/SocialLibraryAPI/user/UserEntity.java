@@ -88,8 +88,6 @@ public class UserEntity implements UserDetails {
         userToUnfollow.getFollowers().remove(this);
     }
 
-    // UserDetails methods
-
     @Override
     public String getUsername() {
         return email;
@@ -104,7 +102,4 @@ public class UserEntity implements UserDetails {
     public String getPassword(){
         return password;
     }
-
-
-
 }

@@ -2,9 +2,9 @@ package app.SocialLibraryAPI.book;
 
 import app.SocialLibraryAPI.book.dto.BookDTO;
 import app.SocialLibraryAPI.genre.dto.GenreDTO;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
-
 public class BookMapper {
     public static BookDTO toDTO(BookEntity book) {
         if (book == null) return null;

@@ -6,6 +6,8 @@ import app.SocialLibraryAPI.user.dto.User;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +42,7 @@ public class UserService {
         return UserMapper.toDTO(userEntity);
     }
 
-    public List<UserDTO> getAllUsers(){
-        log.info("Fetching all users");
-        List<UserDTO> users = userRepository.findAll()
-                .stream()
-                .map(UserMapper::toDTO)
-                .collect(Collectors.toList());
-        log.info("Found {} users", users.size());
-        return users;
-    }
+
 
     public UserDTO findUserById(Long id){
         log.info("Fetching user with id: {}", id);
@@ -121,5 +115,15 @@ public class UserService {
         log.info("Successfully updated profile for user: {}", email);
 
         return UserMapper.toDTO(savedUser);
+    }
+    public Page<UserDTO> searchUsers(String search, Pageable pageable) {
+        log.info("Searching users with query: {}", search);
+
+        String searchParam = (search == null || search.trim().isEmpty())
+                ? "%"
+                : "%" + search.trim() + "%";
+
+        return userRepository.searchUsers(searchParam, pageable)
+                .map(UserMapper::toDTO);
     }
 }

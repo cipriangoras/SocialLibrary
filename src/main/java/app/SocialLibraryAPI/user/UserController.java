@@ -5,7 +5,10 @@ import app.SocialLibraryAPI.user.dto.UserDTO;
 import app.SocialLibraryAPI.user.dto.User;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +34,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers(){
-        log.info("REST request to fetch all users");
-        return ResponseEntity.status(200).body(userService.getAllUsers());
+    public ResponseEntity<Page<UserDTO>> getAllUsers(
+            @RequestParam(required = false) String search,
+            @ParameterObject Pageable pageable) {
+        log.info("REST request to fetch users. Search query: {}", search);
+        return ResponseEntity.status(200).body(userService.searchUsers(search, pageable));
     }
 
     @GetMapping("/{id}")

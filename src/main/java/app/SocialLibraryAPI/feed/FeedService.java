@@ -84,7 +84,7 @@ public class FeedService {
             feed.add(FeedMapper.toDTO(s));
         }
 
-        List<UserBookLibraryEntity> libraryUpdates = userBookLibraryRepository.findByUser_IdInAndUpdatedAtLessThanOrderByUpdatedAtDesc(
+        List<UserBookLibraryEntity> libraryUpdates = userBookLibraryRepository.findByUserIdsWithCursor(
                 followingIds, cursor, limitRequest);
         for (var l : libraryUpdates) {
             if (l.getUpdatedAt() != null) {

@@ -70,12 +70,11 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ArticleDTO>> getArticlesByBookTitle(
-            @RequestParam(required = false) String bookTitle,
+    public ResponseEntity<Page<ArticleDTO>> searchArticles(
+            @RequestParam(required = false) String search,
             @ParameterObject Pageable pageable){
-
-        log.info("REST request to get articles by bookTitle: {}", bookTitle);
-
-        return ResponseEntity.ok(articleService.getArticlesByBookTitle(bookTitle, pageable));
+        log.info("REST request to search articles by: {}", search);
+        return ResponseEntity.ok(articleService.searchArticles(search, pageable));
     }
+
 }

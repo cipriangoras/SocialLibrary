@@ -34,6 +34,15 @@ public class BookClubController {
         return ResponseEntity.status(201).body(bookClubService.createClub(principal.getName(), request));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BookClubDTO> updateClub(
+            @PathVariable Integer id,
+            @Valid @RequestBody CreateBookClubRequest request,
+            Principal principal) {
+        log.info("REST request to update book club id: {} by user: {}", id, principal.getName());
+        return ResponseEntity.status(200).body(bookClubService.updateBookClub(principal.getName(), id, request));
+    }
+
     @PostMapping("/{clubId}/join")
     public ResponseEntity<Void> joinClub(@PathVariable Integer clubId, Principal principal) {
         log.info("REST request to join club id: {} by user: {}", clubId, principal.getName());
@@ -59,10 +68,10 @@ public class BookClubController {
 
     @GetMapping
     public ResponseEntity<Page<BookClubDTO>> getAllClubs(
-            @RequestParam(required = false, defaultValue = "") String bookTitle,
+            @RequestParam(required = false) String search,
             @ParameterObject Pageable pageable) {
-        log.info("REST request to get all book clubs filtered by book title: {}", bookTitle);
-        return ResponseEntity.status(200).body(bookClubService.getAllBookClubs(bookTitle, pageable));
+        log.info("REST request to get all book clubs filtered by search: {}", search);
+        return ResponseEntity.status(200).body(bookClubService.getAllBookClubs(search, pageable));
     }
 
     @DeleteMapping("/{id}")
@@ -81,10 +90,10 @@ public class BookClubController {
     @PutMapping("/{clubId}/current-book")
     public ResponseEntity<BookClubDTO> changeCurrentBook(
             @PathVariable Integer clubId,
-            @RequestParam Integer newBookId,
+            @RequestParam String newBookTitle,
             Principal principal) {
-        log.info("REST request to change current book to {} for club id: {} by user: {}", newBookId, clubId, principal.getName());
-        return ResponseEntity.status(200).body(bookClubService.changeCurrentBook(principal.getName(), clubId, newBookId));
+        log.info("REST request to change current book to '{}' for club id: {} by user: {}", newBookTitle, clubId, principal.getName());
+        return ResponseEntity.status(200).body(bookClubService.changeCurrentBook(principal.getName(), clubId, newBookTitle));
     }
 
     @GetMapping("/{clubId}/sessions")
@@ -108,6 +117,12 @@ public class BookClubController {
 
         ClubSessionDTO closedSession = bookClubService.closeSession(principal.getName(), clubId, sessionId);
         return ResponseEntity.status(200).body(closedSession);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BookClubDTO>> getUserClubs(@PathVariable Long userId) {
+        log.info("REST request to fetch book clubs for user id: {}", userId);
+        return ResponseEntity.status(200).body(bookClubService.getUserClubs(userId));
     }
 
 }
