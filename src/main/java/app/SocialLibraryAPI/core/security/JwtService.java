@@ -28,7 +28,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Date now = new Date(System.currentTimeMillis());
-        Date expiry = new Date(System.currentTimeMillis() + 1000L * 60 * 24); // 24 de ore
+        Date expiry = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24); // 24 de ore
 
         return Jwts.builder()
                 .subject(userDetails.getUsername())

@@ -29,7 +29,7 @@ public class BookClubMapper {
             LocalDateTime lastSession = sortedSessions.get(sortedSessions.size() - 1).getStartTime();
 
             long daysBetween = ChronoUnit.DAYS.between(firstSession, lastSession);
-            if (daysBetween == 0) daysBetween = 1; // Prevenim împărțirea la zero
+            if (daysBetween == 0) daysBetween = 1;
 
             double avgDays = (double) daysBetween / (sortedSessions.size() - 1);
 

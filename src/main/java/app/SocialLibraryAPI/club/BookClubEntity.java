@@ -23,6 +23,8 @@ public class BookClubEntity {
     private Integer id;
 
     private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(columnDefinition = "TEXT")

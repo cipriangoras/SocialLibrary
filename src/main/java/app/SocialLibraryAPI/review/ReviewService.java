@@ -1,5 +1,7 @@
 package app.SocialLibraryAPI.review;
 
+import app.SocialLibraryAPI.feed.FeedMapper;
+import app.SocialLibraryAPI.feed.dto.FeedItemDTO;
 import app.SocialLibraryAPI.review.dto.CreateReviewRequest;
 import app.SocialLibraryAPI.review.dto.ReviewDTO;
 import app.SocialLibraryAPI.book.BookEntity;
@@ -133,5 +135,19 @@ public class ReviewService {
 
         log.info("Successfully updated review id: {}", reviewId);
         return ReviewMapper.toDTO(updatedReview);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FeedItemDTO> getUserReviewsAsFeedItems(Long userId) {
+        log.info("Fetching reviews for user id: {} as feed items", userId);
+
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User not found with id: " + userId);
+        }
+
+        return reviewRepository.findByUser_IdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(FeedMapper::toDTO)
+                .toList();
     }
 }

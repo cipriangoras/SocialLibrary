@@ -23,4 +23,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
             LocalDateTime cursor,
             Pageable pageable
     );
+
+    List<ReviewEntity> findByUser_IdOrderByCreatedAtDesc(Long userId);
 }

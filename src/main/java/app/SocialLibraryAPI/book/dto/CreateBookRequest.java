@@ -13,8 +13,7 @@ public record CreateBookRequest (
         String author,
 
         @NotBlank
-        @Size(min = 10, max = 17)
-        //@Pattern(regexp = "^[0-9-]+$", message = "ISBN must contain only digits and dashes")
+        @Size(max = 255, message = "ISBN-ul nu poate depăși 255 de caractere")
         String isbn,
 
         @Size(max = 10000)

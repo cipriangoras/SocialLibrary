@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 
 public class FeedMapper {
     public static FeedItemDTO toDTO(ReviewEntity review){
+        int likes = (review.getLikes() != null) ? review.getLikes().size() : 0;
+        int comments = (review.getComments() != null) ? review.getComments().size() : 0;
+
         return new FeedItemDTO(
                 review.getId(),
                 FeedType.REVIEW,
@@ -21,6 +24,9 @@ public class FeedMapper {
                 review.getBook().getId(),
                 review.getBook().getTitle(),
                 review.getBook().getCoverImageUrl(),
+                review.getRating(),
+                likes,
+                comments,
                 review.getCreatedAt()
         );
     }
@@ -35,6 +41,9 @@ public class FeedMapper {
                 article.getRelatedBook() != null ? article.getRelatedBook().getId() : null,
                 article.getRelatedBook() != null ? article.getRelatedBook().getTitle() : null,
                 article.getRelatedBook() != null ? article.getRelatedBook().getCoverImageUrl() : null,
+                null,
+                0,
+                0,
                 article.getCreatedAt()
         );
     }
@@ -49,6 +58,9 @@ public class FeedMapper {
                 club.getBook().getId(),
                 club.getBook().getTitle(),
                 club.getBook().getCoverImageUrl(),
+                null,
+                0,
+                0,
                 club.getCreatedAt()
         );
     }
@@ -64,7 +76,10 @@ public class FeedMapper {
                 null,
                 null,
                 null,
-                session.getCreatedAt() != null ? session.getCreatedAt() : session.getStartTime() // <-- ACTUALIZAT AICI
+                null,
+                0,
+                0,
+                session.getCreatedAt() != null ? session.getCreatedAt() : session.getStartTime()
         );
     }
 
@@ -85,9 +100,10 @@ public class FeedMapper {
                 library.getBook().getId(),
                 library.getBook().getTitle(),
                 library.getBook().getCoverImageUrl(),
+                null,
+                0,
+                0,
                 library.getUpdatedAt() != null ? library.getUpdatedAt() : LocalDateTime.now()
         );
     }
-
-
 }

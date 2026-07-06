@@ -54,7 +54,7 @@ public class BookEntity {
     )
     private Set<GenreEntity> genres = new HashSet<>();
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;
 
     @OneToMany(mappedBy = "book")

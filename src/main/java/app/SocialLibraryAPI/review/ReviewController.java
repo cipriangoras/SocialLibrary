@@ -1,5 +1,6 @@
 package app.SocialLibraryAPI.review;
 
+import app.SocialLibraryAPI.feed.dto.FeedItemDTO;
 import app.SocialLibraryAPI.review.dto.CreateReviewRequest;
 import app.SocialLibraryAPI.review.dto.ReviewDTO;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -51,5 +53,12 @@ public class ReviewController {
             @ParameterObject Pageable pageable) {
         log.info("REST request to fetch reviews for book id: {} with pagination", bookId);
         return ResponseEntity.status(200).body(reviewService.getReviewsForBook(bookId, pageable));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<FeedItemDTO>> getUserReviews(@PathVariable Long userId) {
+        log.info("REST request to fetch reviews for user id: {} as feed items", userId);
+        List<FeedItemDTO> userReviews = reviewService.getUserReviewsAsFeedItems(userId);
+        return ResponseEntity.ok(userReviews);
     }
 }

@@ -14,5 +14,8 @@ public record FeedItemDTO(
         Integer relatedBookId,
         String relatedBookTitle,
         String relatedBookCoverImageUrl,
+        Integer rating,
+        int likeCount,
+        int commentCount,
         LocalDateTime createdAt
 ) {}

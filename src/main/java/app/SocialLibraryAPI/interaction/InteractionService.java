@@ -45,7 +45,7 @@ public class InteractionService {
         Optional<ArticleLikeEntity> existingLike = articleLikeRepo.findByArticle_IdAndUser_Email(articleId, userEmail);
 
         if (existingLike.isPresent()) {
-            articleLikeRepo.delete(existingLike.get()); // Dislike
+            articleLikeRepo.delete(existingLike.get());
             log.info("Removed like from article {}", articleId);
         } else {
             UserEntity user = userRepo.findByEmail(userEmail).orElseThrow();
@@ -55,7 +55,7 @@ public class InteractionService {
             ArticleLikeEntity newLike = new ArticleLikeEntity();
             newLike.setUser(user);
             newLike.setArticle(article);
-            articleLikeRepo.save(newLike); // Like
+            articleLikeRepo.save(newLike);
             log.info("Added like to article {}", articleId);
         }
     }
